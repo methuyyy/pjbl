@@ -1,0 +1,189 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #f4f3f3;
+}
+
+/* LAYOUT UTAMA */
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #4b2723;
+    padding: 30px 20px;
+    color: white;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.menu {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.menu a {
+    color: #f8f8f8;
+    text-decoration: none;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.menu a.active,
+.menu a:hover {
+    background: #3c1f1c;
+}
+
+/* MAIN CONTENT */
+.content {
+    flex: 1;
+    padding: 50px 60px;
+}
+
+.content h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.tab-btn {
+    background: #d3b28c;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* FORM CARD */
+.form-card {
+    background: #ecebeb;
+    padding: 30px;
+    margin-top: 25px;
+    border-radius: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px 40px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background: white;
+    font-size: 14px;
+}
+
+textarea {
+    height: 150px;
+    resize: none;
+}
+
+.form-group.full {
+    grid-column: span 2;
+    margin-top: 10px;
+}
+
+/* UPLOAD BOX */
+.upload-box {
+    margin-top: 15px;
+    width: fit-content;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.upload-icon {
+    width: 32px;
+}
+
+/* SUBMIT BUTTON */
+.submit-btn {
+    margin-top: 25px;
+    padding: 10px 40px;
+    background: #d3b28c;
+    border: none;
+    border-radius: 20px;
+    float: right;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    .menu {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: span 1;
+    }
+
+    .submit-btn {
+        float: none;
+        width: 100%;
+    }
+}

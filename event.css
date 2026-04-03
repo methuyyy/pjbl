@@ -1,0 +1,483 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #f4f4f4;
+}
+
+/* HEADER */
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 40px;
+  z-index: 1000;
+  border-bottom: 1px solid #ccc;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo-header {
+  width: 74.9px;
+  height: 74.26px;
+  margin-right: 10px;
+}
+
+.brand-name {
+  font-weight: bold;
+  color: #000;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #000;
+  margin: 0 12px;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.nav-menu a:hover {
+  color: #8b4513;
+}
+
+/* HERO */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 50px;
+  background: white;
+  border-radius: 15px;
+  margin: 30px auto;
+  width: 90%;
+}
+
+.hero-left {
+  width: 50%;
+}
+
+.hero-left h1 {
+  margin: 10px 0;
+}
+
+.hero-info p {
+  margin: 5px 0;
+}
+
+.hero-text p {
+  color: #9ba4b4;
+}
+
+.hero-right img {
+  width: 450px;
+  height: 280px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* kartu */
+
+/* Import Font Awesome (opsional, jika belum di HTML) */
+
+:root {
+  --primary-color: #333;
+  --secondary-color: #999;
+  --third-color: #432525;
+  --background-light: #f5f5f5;
+  --card-bg: #fff;
+  --card-radius: 20px;
+  --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--background-light);
+  color: var(--primary-color);
+  padding: 20px;
+}
+
+/* Tata Letak Kontainer Utama untuk meniru eventpage.jpg */
+.content-container {
+  max-width: 1200px; /* Lebar maksimal halaman */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.section-title {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.title-up {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: #432525;
+}
+
+/* -------------------------------------- */
+/* CSS untuk GRID KARTU (Meniru eventpage.jpg) */
+/* -------------------------------------- */
+
+.cards-grid {
+  display: grid;
+  /* Membuat 4 kolom yang sama lebarnya (untuk desktop) */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; /* Jarak antar kartu */
+}
+
+/* -------------------------------------- */
+/* CSS untuk KARTU ACARA (Group 65.png) */
+/* -------------------------------------- */
+
+.event-card {
+  background-color: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-light); /* Shadow lembut seperti pada gambar */
+  /* Menentukan lebar kartu agar terlihat mirip dengan gambar */
+  width: 100%;
+  position: relative;
+  margin: 0 auto; /* Tengah di dalam kolom grid */
+}
+
+/* Bagian Gambar */
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  /* Rasio aspek untuk gambar, misalnya 4:3 */
+  padding-top: 75%;
+}
+
+.card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  object-fit: cover; /* Memastikan gambar mengisi area tanpa terdistorsi */
+  border-top-left-radius: var(--card-radius);
+  border-top-right-radius: var(--card-radius);
+}
+
+/* Tag Harga (Rp.30.000) */
+.price-tag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: rgba(0, 0, 0, 0.6); /* Background hitam transparan */
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Tombol Ikon (Share dan Heart) */
+.icon-buttons {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 5px;
+}
+
+.icon-btn {
+  background-color: rgba(255, 255, 255, 0.7); /* Background putih transparan */
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--primary-color);
+  transition: background-color 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.icon-btn.heart {
+  /* Untuk membuat ikon heart terlihat bold */
+  color: black;
+  font-weight: bold;
+}
+
+/* -------------------------------------- */
+/* Detail Acara (Tanggal & Teks) */
+/* -------------------------------------- */
+
+.card-details {
+  display: flex;
+  padding: 15px;
+  align-items: flex-start; /* Penting untuk menyamakan perataan atas */
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 15px;
+  line-height: 1.1; /* Mengurangi spasi baris */
+}
+
+.date-info .month {
+  font-size: 1rem;
+  color: var(--third-color);
+  font-weight: 500;
+}
+
+.date-info .day {
+  font-size: 2rem; /* Ukuran besar untuk tanggal */
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.text-info {
+  /* Memastikan teks info mengisi sisa ruang */
+  flex-grow: 1;
+}
+
+.event-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 0;
+  line-height: 1.3;
+}
+
+.location {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  margin-top: 3px;
+}
+
+/* POPUP WRAPPER */
+.card-popup {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 90%;
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s ease;
+  z-index: 20;
+}
+
+/* Saat aktif */
+.card-popup.active {
+  opacity: 1;
+  transform: translateX(100%) translateY(-10px);
+  pointer-events: auto;
+}
+
+/* TITLE */
+.card-popup h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.card-popup p {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* Tambahkan ke kalender */
+.add-calendar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8d5b3d;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+/* BUTTON UTAMA */
+.btn-primary {
+  width: 100%;
+  padding: 14px 0;
+  background: #d6b28a;
+  border-radius: 100px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+/* BUTTON SECOND */
+.btn-secondary {
+  width: 100%;
+  padding: 14px 0;
+  background: #f1efef;
+  border-radius: 100px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+/* TIDAK JADI */
+.cancel-text {
+  text-align: center;
+  font-size: 12px;
+  color: #7f7f7f;
+  cursor: pointer;
+}
+
+
+/* Responsif untuk layar kecil (seperti HP) */
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 kolom di tablet/mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .cards-grid {
+    grid-template-columns: 1fr; /* 1 kolom di mobile kecil */
+  }
+  .event-card {
+    max-width: 100%;
+  }
+}
+
+/* SEARCH */
+.search-box {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.search-container {
+  background: white;
+  width: 350px;
+  padding: 12px 18px;
+  display: flex;
+  gap: 10px;
+  margin: auto;
+  border-radius: 30px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+/* Footer */
+        .footer {
+        background-color: #4b2420;
+        color: #fff;
+        padding: 60px 80px;
+        font-family: Arial, sans-serif;
+        }
+
+        .footer-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 40px;
+        }
+
+        .footer-col {
+        flex: 1;
+        min-width: 250px;
+        }
+
+        .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        }
+
+        .footer-logo img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        }
+
+        .footer-about p {
+        max-width: 320px;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #f8f8f8;
+        }
+
+        .footer-category h3,
+        .footer-contact h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+        color: #fff;
+        }
+
+        .footer-category ul {
+        list-style: none;
+        padding: 0;
+        }
+
+        .footer-category li {
+        margin-bottom: 8px;
+        font-size: 15px;
+        color: #f1f1f1;
+        }
+
+        .footer-contact p {
+        font-size: 15px;
+        color: #f1f1f1;
+        line-height: 1.6;
+        }
+
+        .footer-line {
+        margin-top: 40px;
+        border: none;
+        border-top: 2px solid #b6a49c;
+        width: 100%;
+        }
+.card-popup {
+  width: 24rem;
+  aspect-ratio: 1/1;
+  position: absolute;
+  border: 1px solid #242424;
+  transform: translateX(110%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+.card-popup.active {
+  display: block;
+}

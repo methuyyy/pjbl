@@ -1,0 +1,228 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #f5f5f5;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  background: #fff;
+  display: flex;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* BAGIAN KIRI */
+.left {
+  flex: 1;
+  background: url('Group\ 136.png') no-repeat center center/cover;
+  position: relative;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  height: 100%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.logo {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  margin-bottom: 40px;
+}
+
+.overlay h1 {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+/* BAGIAN KANAN */
+.right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-container h2 {
+  font-size: 28px;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.form-container p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.deskripsi{
+  color: #777;
+  text-align: justify;
+  margin-bottom: 10px;
+  margin-top: 6px;
+  display: flex;
+  font-size: 10px;
+}
+
+.admin{
+  color: #777;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 7px;
+  display: flex;
+  font-size: 14px;
+}
+
+.name-fields {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  background: #f4f2f2;
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.05);
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus {
+  border: 1px solid #b97a56;
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.password-field input {
+  border: none;
+  outline: none;
+  flex: 1;
+}
+
+.password-field span {
+  cursor: pointer;
+}
+
+/* TOMBOL UTAMA */
+.btn-primary {
+  width: 100%;
+  background: #4b2e1a;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-top: 25px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #3a2314;
+}
+
+/* PEMBATAS */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 25px 0;
+  color: #777;
+}
+
+.divider hr {
+  flex: 1;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.divider span {
+  margin: 0 10px;
+  font-size: 14px;
+}
+
+/* SOCIAL BUTTONS */
+.social-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-buttons button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid #4b2e1a;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.social-buttons img {
+  width: 20px;
+}
+
+.social-buttons button:hover {
+  background: #f5e9e3;
+}
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left {
+    height: 250px;
+  }
+
+  .overlay {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .right {
+    padding: 30px 20px;
+  }
+}
+
+a {
+  text-decoration: none;
+}

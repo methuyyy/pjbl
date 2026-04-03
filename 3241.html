@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seting Akun - Pawarti</title>
+  <link rel="stylesheet" href="3241.css" />
+</head>
+<body>
+  <div class="main-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="../assets/logo2.png" alt="Pawarti Logo" />
+        <h3 class="sidebar-title">Pawarti</h3>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="../portalevent_landingpage/landingpage.html" class="nav-item active">
+          <span class="nav-icon"><img src="../assets/beranda.png" alt="gambar beranda"></span> Beranda
+        </a>
+        <a href="../setting_akun/kalender.html" class="nav-item">
+          <span class="nav-icon"><img src="../assets/kalenderevent.png" alt="kalenderevent"></span>Kalender Event
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon"><img src="../assets/tambah.png"></span> Tambahkan Event
+        </a>
+        <a href="../portalevent_register/login.html" class="nav-item logout">
+          <span class="nav-icon"><img src="../assets/keluar.png" alt="keluar"></span> Keluar dari akun
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+      <h1 class="content-title">Seting Akun</h1>
+
+      <!-- TAB -->
+      <div class="tab-buttons">
+        <button class="tab-btn active"><a href="../setting_akun/setting-akun.html">Edit Profile</a></button>
+        <button class="tab-btn"><a href="../setting_akun/event.html">Event</a></button>
+      </div>
+
+      <!-- FORM CARD -->
+      <div class="form-card">
+        <div class="profile-section">
+          <div class="profile-photo">
+            <div class="photo-circle">
+                <div class="photo-icon"><img src="../assets/kamera.png" alt="kamera"></div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" />
+            </div>
+            <div class="form-group full">
+              <label>Email Addres</label>
+              <input type="email" />
+            </div>
+            <div class="form-group full">
+              <label>Phone Number</label>
+              <input type="text" />
+            </div>
+          </div>
+        </div>
+
+        <h2 class="section-title">Personal Addres</h2>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Country</label>
+            <input type="text" />
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" />
+          </div>
+          <div class="form-group full">
+            <label>Address</label>
+            <input type="text" />
+          </div>
+          <div class="form-group">
+            <label>Zip Code</label>
+            <input type="text" />
+          </div>
+        </div>
+
+        <div class="btn-wrapper">
+          <button class="save-btn">Save</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

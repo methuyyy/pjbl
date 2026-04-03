@@ -1,0 +1,237 @@
+body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            background: #f2f1f1;
+            color: #000;
+            padding: 0 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: #b9b5b5 1px solid;
+        }
+
+        .logo-text {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text img {
+            height: auto;
+            width: 75px;
+        }
+
+        header h1 {
+            font-size: 19px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: #000;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #432525;
+        }
+
+        /* Deskripsi Event */
+        .deskripsi-event {
+            background-color: #f6f5f4;
+            padding: 80px 100px;
+        }
+
+        .deskripsi-event h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 40px;
+        }
+
+        .event-container {
+            display: flex;
+            align-items: stretch; /* memastikan kedua sisi (teks dan gambar) sama tinggi */
+            justify-content: space-between;
+            gap: 50px;
+        }
+
+        .event-text {
+            flex: 1;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+
+        .event-text h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+            color: #000;
+        }
+
+        .event-text p {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .btn-selengkapnya {
+            background-color: #D7B48C;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-selengkapnya:hover {
+            background-color: #c69975;
+        }
+
+        .event-image {
+            flex: 1;
+            display: flex;
+            align-items: stretch; 
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: cover; 
+        }
+
+        /* Info Event */
+        .info-event {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 20px;
+            background-color: #f6f5f4;
+            padding: 60px 100px;
+            text-align: center;
+        }
+
+        .info-card {
+            flex: 1;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .info-card img {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 15px;
+        }
+
+        .info-card p {
+            color: #000;
+        }
+
+        .info-card.tiket {
+            background-color: #3d1f18;
+            color: #fff;
+        }
+
+        /* Partisipasi */
+        .partisipasi {
+            background-color: #f6f5f4;
+            padding: 80px 100px;
+            text-align: center;
+        }
+
+        .partisipasi h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .partisipasi-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            justify-items: center;
+        }
+
+        .partisipasi-cards .card {
+            background: #fff;
+            padding: 25px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .partisipasi-cards .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            width: 80px;
+            height: 80px;
+            background-color: #FCF6F0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            flex-shrink: 0;
+        }
+
+        .partisipasi-cards img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .partisipasi-cards h4 {
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        .partisipasi-cards p {
+            color: #7b5631;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .partisipasi-cards button {
+            background-color: #d9b08c;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .partisipasi-cards button:hover {
+            background-color: #c69975;
+        }
+
+        .card img {
+            width: 35px;
+            padding: 20px;
+        }
