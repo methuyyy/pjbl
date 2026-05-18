@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Jelajahi Kekayaan Budaya Jawa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #8B2500;
+    --primary-light: #C4401A;
+    --primary-pale: #FFF5F2;
+    --accent: #D4A017;
+    --accent-light: #F7D97A;
+    --dark: #1A0A00;
+    --sidebar-bg: #1C0D00;
+    --sidebar-text: #F5DEB3;
+    --sidebar-muted: #9B7B5A;
+    --sidebar-active: rgba(212,160,23,0.18);
+    --sidebar-hover: rgba(255,255,255,0.06);
+    --bg: #F9F5F0;
+    --card: #FFFFFF;
+    --text: #2C1500;
+    --text-muted: #7A5C3A;
+    --border: #E8DDD0;
+    --success: #2E7D32;
+    --warning: #F57C00;
+    --danger: #C62828;
+    --info: #1565C0;
+    --sidebar-w: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    background: var(--sidebar-bg);
+  }
+  .login-left {
+    flex: 1;
+    background: linear-gradient(160deg, #1C0D00 0%, #3B1200 60%, #6B2800 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-left::before {
+    content: '';
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 60px solid rgba(212,160,23,0.06);
+    top: -80px; right: -80px;
+  }
+  .login-left::after {
+    content: '';
+    position: absolute;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 40px solid rgba(139,37,0,0.15);
+    bottom: -60px; left: -60px;
+  }
+  .login-brand-icon {
+    font-size: 56px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 16px rgba(212,160,23,0.3));
+  }
+  .login-brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--accent-light);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .login-brand-sub {
+    font-size: 13px;
+    color: var(--sidebar-muted);
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .login-features {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 300px;
+  }
+  .login-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--sidebar-text);
+    font-size: 14px;
+  }
+  .login-feature-icon {
+    width: 36px; height: 36px;
+    background: rgba(212,160,23,0.12);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-light);
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .login-right {
+    width: 440px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px;
+  }
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .login-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+    text-align: center;
+  }
+  .login-form { width: 100%; }
+  .login-avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+  .login-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 600; color: #fff;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 20px rgba(139,37,0,0.25);
+  }
+  .login-name-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .login-error {
+    background: #FFEBEE;
+    color: #C62828;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .login-error.show { display: block; }
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 8px;
+  }
+  .login-btn:hover { background: var(--primary-light); }
+  .login-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 20px;
+  }
+  .login-hint strong { color: var(--primary); }
+  .pw-wrap { position: relative; }
+  .pw-toggle {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    cursor: pointer; color: var(--text-muted);
+    font-size: 14px;
+  }
+  @media(max-width: 700px) {
+    .login-left { display: none; }
+    .login-right { width: 100%; }
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+    transition: transform .3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-logo .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--accent-light);
+    line-height: 1.2;
+    display: block;
+  }
+  .sidebar-logo .brand-sub {
+    font-size: 11px;
+    color: var(--sidebar-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 3px;
+    display: block;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--sidebar-muted);
+    padding: 16px 12px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--sidebar-text);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all .2s;
+    margin-bottom: 2px;
+    user-select: none;
+  }
+  .nav-item i { font-size: 16px; width: 18px; text-align: center; }
+  .nav-item:hover { background: var(--sidebar-hover); color: #fff; }
+  .nav-item.active {
+    background: var(--sidebar-active);
+    color: var(--accent-light);
+    font-weight: 500;
+    border-left: 2px solid var(--accent);
+  }
+  .nav-item .badge {
+    margin-left: auto;
+    background: var(--primary);
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 99px;
+  }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .admin-profile:hover { background: var(--sidebar-hover); }
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+  .admin-name { font-size: 13px; color: var(--sidebar-text); font-weight: 500; }
+  .admin-role { font-size: 11px; color: var(--sidebar-muted); }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    height: 60px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text);
+    flex: 1;
+  }
+  .topbar-actions { display: flex; align-items: center; gap: 12px; }
+  .topbar-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    transition: all .2s;
+    position: relative;
+  }
+  .topbar-btn:hover { background: var(--bg); color: var(--primary); }
+  .notif-dot {
+    position: absolute; top: 5px; right: 5px;
+    width: 7px; height: 7px;
+    background: var(--primary);
+    border-radius: 50%;
+    border: 1.5px solid var(--card);
+  }
+  .topbar-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .content {
+    flex: 1;
+    padding: 28px;
+    display: none;
+  }
+  .content.active { display: block; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); }
+  .page-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary-pale); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--primary);
+  }
+  .stat-card.accent::before { background: var(--accent); }
+  .stat-card.success::before { background: var(--success); }
+  .stat-card.info::before { background: var(--info); }
+  .stat-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--text); }
+  .stat-change { font-size: 12px; margin-top: 4px; }
+  .stat-change.up { color: var(--success); }
+  .stat-change.down { color: var(--danger); }
+  .stat-icon {
+    position: absolute; right: 16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 32px;
+    color: var(--border);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title { font-weight: 500; font-size: 15px; }
+  .card-body { padding: 20px; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--primary-pale); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .badge-success { background: #E8F5E9; color: #2E7D32; }
+  .badge-warning { background: #FFF3E0; color: #E65100; }
+  .badge-danger { background: #FFEBEE; color: #C62828; }
+  .badge-info { background: #E3F2FD; color: #1565C0; }
+  .badge-muted { background: var(--bg); color: var(--text-muted); }
+
+  /* ── GRID LAYOUTS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media(max-width: 900px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ── EVENT CARDS ── */
+  .event-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .event-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer;
+  }
+  .event-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(139,37,0,0.1); }
+  .event-img {
+    height: 140px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    position: relative;
+  }
+  .event-img .overlay-label {
+    position: absolute; bottom: 8px; left: 8px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+  .event-body { padding: 14px; }
+  .event-title { font-weight: 500; font-size: 14px; margin-bottom: 6px; }
+  .event-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 18px; }
+  .form-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .form-control {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    transition: border .2s;
+    outline: none;
+  }
+  .form-control:focus { border-color: var(--primary); background: #fff; }
+  select.form-control { cursor: pointer; }
+  textarea.form-control { resize: vertical; min-height: 90px; }
+
+  /* ── CHART BAR ── */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding: 0 4px; }
+  .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar {
+    width: 100%;
+    background: linear-gradient(to top, var(--primary), var(--primary-light));
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: opacity .2s;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-label { font-size: 10px; color: var(--text-muted); }
+  .bar-val { font-size: 11px; font-weight: 500; color: var(--text); }
+
+  /* ── KONTRIBUSI CHART ── */
+  .donut-wrap { display: flex; align-items: center; gap: 24px; }
+  .donut-legend { flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 10px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── NOTIFICATION PANEL ── */
+  .notif-list { list-style: none; }
+  .notif-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-icon-wrap {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+  }
+  .notif-text { font-size: 13px; color: var(--text); }
+  .notif-time { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  /* ── KATEGORI CHIPS ── */
+  .chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 5px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    background: var(--card);
+  }
+  .chip:hover, .chip.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  /* ── UPLOAD AREA ── */
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .upload-area:hover { border-color: var(--primary); background: var(--primary-pale); }
+  .upload-icon { font-size: 36px; color: var(--text-muted); margin-bottom: 12px; }
+  .upload-text { font-size: 14px; color: var(--text-muted); }
+
+  /* ── SETTING TOGGLE ── */
+  .toggle-wrap { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .toggle-wrap:last-child { border-bottom: none; }
+  .toggle-label { font-size: 14px; font-weight: 500; }
+  .toggle-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .toggle {
+    position: relative;
+    width: 44px; height: 24px;
+    background: var(--border);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background .2s;
+    flex-shrink: 0;
+  }
+  .toggle.on { background: var(--primary); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: left .2s;
+  }
+  .toggle.on::after { left: 23px; }
+
+  /* ── PAGINATION ── */
+  .pagination { display: flex; gap: 4px; align-items: center; }
+  .pg-btn {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--card);
+    transition: all .2s;
+    color: var(--text);
+  }
+  .pg-btn:hover, .pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="login-brand-icon">🏛️</div>
+    <div class="login-brand-title">Jelajahi Kekayaan<br>Budaya Jawa</div>
+    <div class="login-brand-sub">Panel Administrasi</div>
+    <div class="login-features">
+      <div class="login-feature-item">
+        <div class="login-feature-icon"><i class="fas fa-calendar-star"></i></div>
+        Kelola Event & Kegiatan Budaya
+      </div>
+      <div class="login-feature-item">
+        <div class="login-feature-icon"><i class="fas fa-newspaper"></i></div>
+        Manajemen Konten & Artikel
+      </div>
+      <div class="login-feature-item">
+        <div class="login-feature-icon"><i class="fas fa-chart-bar"></i></div>
+        Laporan & Statistik Real-time
+      </div>
+      <div class="login-feature-item">
+        <div class="login-feature-icon"><i class="fas fa-users"></i></div>
+        Manajemen Pengguna & Peran
+      </div>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-avatar-wrap">
+      <div class="login-avatar">AS</div>
+    </div>
+    <div class="login-title">Masuk ke Admin Panel</div>
+    <div class="login-sub">Silakan masukkan kredensial akun Anda</div>
+
+    <div class="login-form">
+      <div class="login-error" id="login-error">
+        <i class="fas fa-exclamation-circle"></i> Email atau password salah. Coba lagi.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="login-email" placeholder="admin@nusantara.id" value="admin@nusantara.id">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="pw-wrap">
+          <input type="password" class="form-control" id="login-password" placeholder="Masukkan password" value="admin123">
+          <button class="pw-toggle" type="button" onclick="togglePw()"><i class="fas fa-eye" id="pw-eye"></i></button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--primary);"> Ingat saya
+        </label>
+        <a href="#" style="font-size:13px;color:var(--primary);text-decoration:none;">Lupa password?</a>
+      </div>
+      <button class="login-btn" onclick="doLogin()">
+        <i class="fas fa-sign-in-alt"></i> &nbsp;Masuk
+      </button>
+      <div class="login-hint">
+        Demo: <strong>admin@nusantara.id</strong> / <strong>admin123</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="brand">Nusantara Admin</span>
+    <span class="brand-sub">Budaya Jawa Timur</span>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Utama</div>
+    <div class="nav-item active" data-page="dashboard">
+      <i class="fas fa-th-large"></i> Dashboard
+    </div>
+    <div class="nav-item" data-page="events">
+      <i class="fas fa-calendar-star"></i> Event & Kegiatan
+      <span class="badge">3</span>
+    </div>
+    <div class="nav-item" data-page="kategori">
+      <i class="fas fa-layer-group"></i> Kategori Budaya
+    </div>
+    <div class="nav-item" data-page="konten">
+      <i class="fas fa-newspaper"></i> Konten & Artikel
+    </div>
+
+    <div class="nav-section-label">Manajemen</div>
+    <div class="nav-item" data-page="pengguna">
+      <i class="fas fa-users"></i> Pengguna
+    </div>
+    <div class="nav-item" data-page="laporan">
+      <i class="fas fa-chart-bar"></i> Laporan & Statistik
+    </div>
+    <div class="nav-item" data-page="media">
+      <i class="fas fa-photo-film"></i> Media & Galeri
+    </div>
+    <div class="nav-item" data-page="pesan">
+      <i class="fas fa-envelope"></i> Pesan Masuk
+      <span class="badge">7</span>
+    </div>
+
+    <div class="nav-section-label">Sistem</div>
+    <div class="nav-item" data-page="pengaturan">
+      <i class="fas fa-sliders-h"></i> Pengaturan
+    </div>
+    <div class="nav-item" data-page="akun">
+      <i class="fas fa-user-circle"></i> Akun Saya
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="admin-profile" onclick="navTo('akun')" title="Lihat profil akun">
+      <div class="avatar">AS</div>
+      <div>
+        <div class="admin-name">Admin Sanjaya</div>
+        <div class="admin-role">Super Admin</div>
+      </div>
+      <i class="fas fa-ellipsis-v" style="margin-left:auto; color:#9B7B5A; font-size:12px;"></i>
+    </div>
+    <div style="margin-top:10px;">
+      <div class="nav-item" style="color:#EF9A9A;" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Keluar
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <div class="topbar-search">
+      <i class="fas fa-search" style="font-size:12px;"></i> Cari sesuatu...
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" title="Notifikasi">
+        <i class="fas fa-bell" style="font-size:14px;"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="topbar-btn" title="Profil">
+        <i class="fas fa-user-circle" style="font-size:14px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="content active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Selamat Datang, Admin 🏛</div>
+        <div class="page-sub">Berikut ringkasan aktivitas hari ini — Senin, 18 Mei 2026</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Konten</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Pengunjung</div>
+        <div class="stat-value">24.830</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12.4% dari bulan lalu</div>
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+      </div>
+      <div class="stat-card accent">
+        <div class="stat-label">Event Aktif</div>
+        <div class="stat-value">14</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 3 event baru</div>
+        <div class="stat-icon"><i class="fas fa-calendar"></i></div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Artikel Dipublikasi</div>
+        <div class="stat-value">381</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 8 artikel minggu ini</div>
+        <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-label">Pesan Masuk</div>
+        <div class="stat-value">47</div>
+        <div class="stat-change down"><i class="fas fa-arrow-down"></i> 7 belum dibaca</div>
+        <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Pengunjung 7 Hari Terakhir</span>
+          <button class="btn btn-outline btn-sm">Detail</button>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart">
+            <div class="bar-item">
+              <div class="bar-val">820</div>
+              <div class="bar" style="height:55%"></div>
+              <div class="bar-label">Sen</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-val">1.2K</div>
+              <div class="bar" style="height:80%"></div>
+              <div class="bar-label">Sel</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-val">940</div>
+              <div class="bar" style="height:62%"></div>
+              <div class="bar-label">Rab</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-val">1.5K</div>
+              <div class="bar" style="height:100%"></div>
+              <div class="bar-label">Kam</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-val">1.1K</div>
+              <div class="bar" style="height:73%"></div>
+              <div class="bar-label">Jum</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-val">1.4K</div>
+              <div class="bar" style="height:93%"></div>
+              <div class="bar-label">Sab</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-val">980</div>
+              <div class="bar" style="height:65%"></div>
+              <div class="bar-label">Min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Distribusi Kategori</span>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#F9F5F0" stroke-width="18"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#8B2500" stroke-width="18" stroke-dasharray="94 220" stroke-dashoffset="-55" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#D4A017" stroke-width="18" stroke-dasharray="70 244" stroke-dashoffset="-149" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1565C0" stroke-width="18" stroke-dasharray="50 264" stroke-dashoffset="-219" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#2E7D32" stroke-width="18" stroke-dasharray="30 284" stroke-dashoffset="-269" transform="rotate(-90 60 60)"/>
+              <text x="60" y="56" text-anchor="middle" font-size="10" fill="#7A5C3A" font-family="DM Sans">Total</text>
+              <text x="60" y="70" text-anchor="middle" font-size="15" fill="#1A0A00" font-weight="600" font-family="DM Sans">381</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#8B2500"></div> Seni Pertunjukan — 30%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#D4A017"></div> Kuliner Tradisional — 22%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#1565C0"></div> Kerajinan Tangan — 16%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div> Wisata Budaya — 10%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#E8DDD0"></div> Lainnya — 22%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Aktivitas Terbaru</span>
+        <button class="btn btn-outline btn-sm">Lihat Semua</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Judul Konten</th>
+              <th>Kategori</th>
+              <th>Pengguna</th>
+              <th>Waktu</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Festival Reog Ponorogo 2026</strong></td>
+              <td>Event</td>
+              <td>Budi Santoso</td>
+              <td>2 jam lalu</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+            </tr>
+            <tr>
+              <td><strong>Resep Rawon Spesial Surabaya</strong></td>
+              <td>Kuliner</td>
+              <td>Siti Rahayu</td>
+              <td>5 jam lalu</td>
+              <td><span class="badge badge-warning">Menunggu</span></td>
+            </tr>
+            <tr>
+              <td><strong>Batik Tulis Madura Modern</strong></td>
+              <td>Kerajinan</td>
+              <td>Agus Wibowo</td>
+              <td>Kemarin</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+            </tr>
+            <tr>
+              <td><strong>Tari Gandrung Banyuwangi</strong></td>
+              <td>Seni</td>
+              <td>Dewi Lestari</td>
+              <td>Kemarin</td>
+              <td><span class="badge badge-info">Draft</span></td>
+            </tr>
+            <tr>
+              <td><strong>Wisata Gunung Bromo Terkini</strong></td>
+              <td>Wisata</td>
+              <td>Fajar Nugroho</td>
+              <td>3 hari lalu</td>
+              <td><span class="badge badge-danger">Nonaktif</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EVENT ═══ -->
+  <div class="content" id="page-events">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Event & Kegiatan</div>
+        <div class="page-sub">Kelola semua event budaya yang akan dan sedang berjalan</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Event</button>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <input type="text" class="form-control" placeholder="🔍  Cari event..." style="max-width:260px;">
+        <select class="form-control" style="max-width:160px;">
+          <option>Semua Status</option>
+          <option>Aktif</option>
+          <option>Mendatang</option>
+          <option>Selesai</option>
+        </select>
+        <select class="form-control" style="max-width:160px;">
+          <option>Semua Kategori</option>
+          <option>Seni Pertunjukan</option>
+          <option>Kuliner</option>
+          <option>Kerajinan</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="event-grid">
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#8B2500,#D4A017);">
+          🎭
+          <span class="overlay-label">Aktif</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Festival Reog Ponorogo 2026</div>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> 20–25 Jun</span>
+            <span><i class="fas fa-map-marker-alt"></i> Ponorogo</span>
+          </div>
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <span class="badge badge-success">Aktif</span>
+            <button class="btn btn-outline btn-sm">Edit</button>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#1565C0,#5B9BD5);">
+          🎵
+          <span class="overlay-label">Mendatang</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Konser Angklung Malang</div>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> 5 Jul</span>
+            <span><i class="fas fa-map-marker-alt"></i> Malang</span>
+          </div>
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <span class="badge badge-info">Mendatang</span>
+            <button class="btn btn-outline btn-sm">Edit</button>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#2E7D32,#66BB6A);">
+          🍜
+          <span class="overlay-label">Aktif</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Festival Kuliner Surabaya</div>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> 15–20 Jun</span>
+            <span><i class="fas fa-map-marker-alt"></i> Surabaya</span>
+          </div>
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <span class="badge badge-success">Aktif</span>
+            <button class="btn btn-outline btn-sm">Edit</button>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#6A1B9A,#AB47BC);">
+          🎨
+          <span class="overlay-label">Mendatang</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Pameran Batik Nusantara</div>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> 10 Jul</span>
+            <span><i class="fas fa-map-marker-alt"></i> Jombang</span>
+          </div>
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <span class="badge badge-info">Mendatang</span>
+            <button class="btn btn-outline btn-sm">Edit</button>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#E65100,#FF8F00);">
+          🏔️
+          <span class="overlay-label">Selesai</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Pendakian Bromo Heritage</div>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> 1 Jun</span>
+            <span><i class="fas fa-map-marker-alt"></i> Probolinggo</span>
+          </div>
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <span class="badge badge-muted">Selesai</span>
+            <button class="btn btn-outline btn-sm">Lihat</button>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img" style="background:linear-gradient(135deg,#00695C,#26A69A);">
+          💃
+          <span class="overlay-label">Aktif</span>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Pertunjukan Tari Gandrung</div>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> 25 Jun</span>
+            <span><i class="fas fa-map-marker-alt"></i> Banyuwangi</span>
+          </div>
+          <div style="margin-top:8px; display:flex; gap:6px;">
+            <span class="badge badge-success">Aktif</span>
+            <button class="btn btn-outline btn-sm">Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ KATEGORI ═══ -->
+  <div class="content" id="page-kategori">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Kategori Budaya</div>
+        <div class="page-sub">Kelola kategori dan sub-kategori konten budaya</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Kategori</button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Kategori</th>
+              <th>Ikon</th>
+              <th>Jumlah Konten</th>
+              <th>Sub-kategori</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Seni Pertunjukan</strong></td>
+              <td>🎭</td>
+              <td>114 konten</td>
+              <td>Tari, Wayang, Ludruk, Ketoprak</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Kuliner Tradisional</strong></td>
+              <td>🍜</td>
+              <td>83 konten</td>
+              <td>Makanan, Minuman, Jajanan</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Kerajinan Tangan</strong></td>
+              <td>🎨</td>
+              <td>61 konten</td>
+              <td>Batik, Tenun, Keramik, Ukiran</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Wisata Budaya</strong></td>
+              <td>🏛️</td>
+              <td>38 konten</td>
+              <td>Candi, Museum, Desa Wisata</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Musik Tradisional</strong></td>
+              <td>🎵</td>
+              <td>29 konten</td>
+              <td>Gamelan, Angklung, Kenthongan</td>
+              <td><span class="badge badge-warning">Draft</span></td>
+              <td>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ KONTEN ═══ -->
+  <div class="content" id="page-konten">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Konten & Artikel</div>
+        <div class="page-sub">Buat, edit, dan kelola semua artikel serta konten budaya</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-plus"></i> Tulis Artikel</button>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body">
+        <div class="chip-wrap">
+          <div class="chip active">Semua</div>
+          <div class="chip">Dipublikasi</div>
+          <div class="chip">Draft</div>
+          <div class="chip">Menunggu Review</div>
+          <div class="chip">Seni Pertunjukan</div>
+          <div class="chip">Kuliner</div>
+          <div class="chip">Kerajinan</div>
+          <div class="chip">Wisata</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Judul Artikel</th>
+              <th>Penulis</th>
+              <th>Kategori</th>
+              <th>Tampilan</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sejarah dan Keindahan Reog Ponorogo</strong></td>
+              <td>Budi S.</td>
+              <td>Seni</td>
+              <td>4.821</td>
+              <td>15 Mei 2026</td>
+              <td><span class="badge badge-success">Publik</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><strong>Cara Membuat Rawon Otentik</strong></td>
+              <td>Siti R.</td>
+              <td>Kuliner</td>
+              <td>3.209</td>
+              <td>12 Mei 2026</td>
+              <td><span class="badge badge-success">Publik</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><strong>Batik Tulis vs Batik Cap: Perbedaannya</strong></td>
+              <td>Agus W.</td>
+              <td>Kerajinan</td>
+              <td>1.547</td>
+              <td>10 Mei 2026</td>
+              <td><span class="badge badge-warning">Review</span></td>
+              <td><button class="btn btn-outline btn-sm">Tinjau</button></td>
+            </tr>
+            <tr>
+              <td><strong>10 Destinasi Wisata Budaya Jawa Timur</strong></td>
+              <td>Dewi L.</td>
+              <td>Wisata</td>
+              <td>892</td>
+              <td>8 Mei 2026</td>
+              <td><span class="badge badge-info">Draft</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td><strong>Gamelan: Warisan Musik Dunia dari Jawa</strong></td>
+              <td>Fajar N.</td>
+              <td>Musik</td>
+              <td>2.103</td>
+              <td>5 Mei 2026</td>
+              <td><span class="badge badge-success">Publik</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border);">
+        <span style="font-size:13px; color:var(--text-muted);">Menampilkan 1–5 dari 381 artikel</span>
+        <div class="pagination">
+          <div class="pg-btn"><i class="fas fa-chevron-left" style="font-size:10px;"></i></div>
+          <div class="pg-btn active">1</div>
+          <div class="pg-btn">2</div>
+          <div class="pg-btn">3</div>
+          <div class="pg-btn">…</div>
+          <div class="pg-btn">77</div>
+          <div class="pg-btn"><i class="fas fa-chevron-right" style="font-size:10px;"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PENGGUNA ═══ -->
+  <div class="content" id="page-pengguna">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Manajemen Pengguna</div>
+        <div class="page-sub">Kelola akun, peran, dan izin pengguna</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Tambah Admin</button>
+    </div>
+
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card">
+        <div class="stat-label">Total Pengguna</div>
+        <div class="stat-value">1.847</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +23 minggu ini</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="stat-label">Admin Aktif</div>
+        <div class="stat-value">8</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Kontributor</div>
+        <div class="stat-value">142</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Pengguna</th>
+              <th>Email</th>
+              <th>Peran</th>
+              <th>Bergabung</th>
+              <th>Terakhir Aktif</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="avatar" style="width:30px;height:30px;font-size:11px;">AS</div>
+                  <strong>Admin Sanjaya</strong>
+                </div>
+              </td>
+              <td>admin@nusantara.id</td>
+              <td><span class="badge badge-danger">Super Admin</span></td>
+              <td>Jan 2025</td>
+              <td>Sekarang</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="avatar" style="width:30px;height:30px;font-size:11px;background:linear-gradient(135deg,#1565C0,#42A5F5);">BR</div>
+                  <strong>Budi Rahayu</strong>
+                </div>
+              </td>
+              <td>budi@nusantara.id</td>
+              <td><span class="badge badge-info">Editor</span></td>
+              <td>Mar 2025</td>
+              <td>2 jam lalu</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="avatar" style="width:30px;height:30px;font-size:11px;background:linear-gradient(135deg,#2E7D32,#66BB6A);">DL</div>
+                  <strong>Dewi Lestari</strong>
+                </div>
+              </td>
+              <td>dewi@nusantara.id</td>
+              <td><span class="badge badge-warning">Kontributor</span></td>
+              <td>Jun 2025</td>
+              <td>Kemarin</td>
+              <td><span class="badge badge-success">Aktif</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="avatar" style="width:30px;height:30px;font-size:11px;background:linear-gradient(135deg,#6A1B9A,#AB47BC);">FN</div>
+                  <strong>Fajar Nugroho</strong>
+                </div>
+              </td>
+              <td>fajar@gmail.com</td>
+              <td><span class="badge badge-muted">Pembaca</span></td>
+              <td>Nov 2025</td>
+              <td>5 hari lalu</td>
+              <td><span class="badge badge-warning">Tidak Aktif</span></td>
+              <td><button class="btn btn-outline btn-sm">Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LAPORAN ═══ -->
+  <div class="content" id="page-laporan">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Laporan & Statistik</div>
+        <div class="page-sub">Analisis performa konten dan keterlibatan pengguna</div>
+      </div>
+      <button class="btn btn-outline"><i class="fas fa-download"></i> Ekspor Laporan</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Pageview Bulan Ini</div>
+        <div class="stat-value">187.4K</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 18% vs bulan lalu</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="stat-label">Rata-rata Durasi</div>
+        <div class="stat-value">4m 23s</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +32 detik</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Bounce Rate</div>
+        <div class="stat-value">34.2%</div>
+        <div class="stat-change up" style="color:var(--success)"><i class="fas fa-arrow-down"></i> Turun 5%</div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-label">Pengguna Baru</div>
+        <div class="stat-value">2.841</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +441 bulan ini</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Konten Paling Populer</span></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Sejarah Reog Ponorogo</span><strong>12.4K</strong></div>
+              <div style="height:8px;background:var(--border);border-radius:99px;"><div style="width:82%;height:100%;background:var(--primary);border-radius:99px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Resep Rawon Surabaya</span><strong>9.1K</strong></div>
+              <div style="height:8px;background:var(--border);border-radius:99px;"><div style="width:60%;height:100%;background:var(--accent);border-radius:99px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Wisata Gunung Bromo</span><strong>7.8K</strong></div>
+              <div style="height:8px;background:var(--border);border-radius:99px;"><div style="width:52%;height:100%;background:var(--info);border-radius:99px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Batik Madura Modern</span><strong>5.3K</strong></div>
+              <div style="height:8px;background:var(--border);border-radius:99px;"><div style="width:35%;height:100%;background:var(--success);border-radius:99px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Tari Gandrung Banyuwangi</span><strong>4.1K</strong></div>
+              <div style="height:8px;background:var(--border);border-radius:99px;"><div style="width:27%;height:100%;background:var(--warning);border-radius:99px;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Sumber Traffic</span></div>
+        <div class="card-body">
+          <ul class="notif-list">
+            <li class="notif-item">
+              <div class="notif-icon-wrap" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-search"></i></div>
+              <div>
+                <div class="notif-text">Pencarian Organik</div>
+                <div class="notif-time">68.4% dari total traffic</div>
+              </div>
+              <strong style="margin-left:auto;font-size:13px;">128.4K</strong>
+            </li>
+            <li class="notif-item">
+              <div class="notif-icon-wrap" style="background:#E3F2FD;color:#1565C0;"><i class="fas fa-share-alt"></i></div>
+              <div>
+                <div class="notif-text">Media Sosial</div>
+                <div class="notif-time">18.2% dari total traffic</div>
+              </div>
+              <strong style="margin-left:auto;font-size:13px;">34.2K</strong>
+            </li>
+            <li class="notif-item">
+              <div class="notif-icon-wrap" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-link"></i></div>
+              <div>
+                <div class="notif-text">Tautan Referral</div>
+                <div class="notif-time">9.1% dari total traffic</div>
+              </div>
+              <strong style="margin-left:auto;font-size:13px;">17.1K</strong>
+            </li>
+            <li class="notif-item">
+              <div class="notif-icon-wrap" style="background:#FFEBEE;color:#C62828;"><i class="fas fa-envelope"></i></div>
+              <div>
+                <div class="notif-text">Email Newsletter</div>
+                <div class="notif-time">4.3% dari total traffic</div>
+              </div>
+              <strong style="margin-left:auto;font-size:13px;">8.1K</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MEDIA ═══ -->
+  <div class="content" id="page-media">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Media & Galeri</div>
+        <div class="page-sub">Kelola foto, video, dan aset media lainnya</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Media</button>
+    </div>
+
+    <div class="upload-area" style="margin-bottom:24px;">
+      <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+      <div class="upload-text">Seret & lepas file di sini, atau <strong style="color:var(--primary);">klik untuk memilih</strong></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Mendukung: JPG, PNG, WEBP, MP4 — Maks 50MB</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">File Tersimpan</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm"><i class="fas fa-th"></i></button>
+          <button class="btn btn-outline btn-sm"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" title="reog-ponorogo.jpg">
+            <div style="height:90px;background:linear-gradient(135deg,#8B2500,#D4A017);display:flex;align-items:center;justify-content:center;font-size:28px;">🎭</div>
+            <div style="padding:8px;font-size:11px;color:var(--text-muted);">reog-ponorogo.jpg</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" title="batik-madura.jpg">
+            <div style="height:90px;background:linear-gradient(135deg,#6A1B9A,#AB47BC);display:flex;align-items:center;justify-content:center;font-size:28px;">🎨</div>
+            <div style="padding:8px;font-size:11px;color:var(--text-muted);">batik-madura.jpg</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" title="bromo-sunrise.jpg">
+            <div style="height:90px;background:linear-gradient(135deg,#E65100,#FF8F00);display:flex;align-items:center;justify-content:center;font-size:28px;">🏔️</div>
+            <div style="padding:8px;font-size:11px;color:var(--text-muted);">bromo-sunrise.jpg</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" title="rawon-surabaya.jpg">
+            <div style="height:90px;background:linear-gradient(135deg,#2E7D32,#66BB6A);display:flex;align-items:center;justify-content:center;font-size:28px;">🍜</div>
+            <div style="padding:8px;font-size:11px;color:var(--text-muted);">rawon-surabaya.jpg</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" title="gamelan-show.mp4">
+            <div style="height:90px;background:linear-gradient(135deg,#1565C0,#42A5F5);display:flex;align-items:center;justify-content:center;font-size:28px;">🎵</div>
+            <div style="padding:8px;font-size:11px;color:var(--text-muted);">gamelan-show.mp4</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" title="tari-gandrung.jpg">
+            <div style="height:90px;background:linear-gradient(135deg,#00695C,#26A69A);display:flex;align-items:center;justify-content:center;font-size:28px;">💃</div>
+            <div style="padding:8px;font-size:11px;color:var(--text-muted);">tari-gandrung.jpg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PESAN ═══ -->
+  <div class="content" id="page-pesan">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pesan Masuk</div>
+        <div class="page-sub">7 pesan belum dibaca</div>
+      </div>
+      <button class="btn btn-outline"><i class="fas fa-check-double"></i> Tandai Semua Dibaca</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Daftar Pesan</span></div>
+        <ul class="notif-list" style="padding:0 20px;">
+          <li class="notif-item" style="cursor:pointer;background:var(--primary-pale);padding:12px 8px;border-radius:8px;margin:-4px;">
+            <div class="notif-icon-wrap" style="background:var(--primary);color:#fff;"><i class="fas fa-user"></i></div>
+            <div style="flex:1;">
+              <div class="notif-text" style="font-weight:500;">Budi Santoso</div>
+              <div class="notif-time">Permintaan informasi tentang Festival Reog...</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);flex-shrink:0;">10:30</div>
+          </li>
+          <li class="notif-item" style="cursor:pointer;">
+            <div class="notif-icon-wrap" style="background:#E3F2FD;color:#1565C0;"><i class="fas fa-user"></i></div>
+            <div style="flex:1;">
+              <div class="notif-text">Siti Aminah</div>
+              <div class="notif-time">Terima kasih atas informasi wisata Bromo...</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);flex-shrink:0;">09:15</div>
+          </li>
+          <li class="notif-item" style="cursor:pointer;">
+            <div class="notif-icon-wrap" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-building"></i></div>
+            <div style="flex:1;">
+              <div class="notif-text">Dinas Pariwisata Jatim</div>
+              <div class="notif-time">Undangan kerjasama event bulan Juli...</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);flex-shrink:0;">Kemarin</div>
+          </li>
+          <li class="notif-item" style="cursor:pointer;">
+            <div class="notif-icon-wrap" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-user"></i></div>
+            <div style="flex:1;">
+              <div class="notif-text">Agus Wibowo</div>
+              <div class="notif-time">Laporan bug pada halaman artikel batik...</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);flex-shrink:0;">Kemarin</div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Budi Santoso</span><span class="badge badge-success">Belum Dibalas</span></div>
+        <div class="card-body">
+          <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:14px;margin-bottom:16px;">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">Senin, 18 Mei 2026 — 10:30</div>
+            Halo Admin, saya ingin menanyakan informasi lebih lanjut mengenai Festival Reog Ponorogo 2026. Apakah ada paket khusus untuk rombongan?
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" placeholder="Tulis balasan..."></textarea>
+          </div>
+          <button class="btn btn-primary"><i class="fas fa-paper-plane"></i> Kirim Balasan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PENGATURAN ═══ -->
+  <div class="content" id="page-pengaturan">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pengaturan</div>
+        <div class="page-sub">Konfigurasi sistem dan preferensi website</div>
+      </div>
+      <button class="btn btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><span class="card-title"><i class="fas fa-cog" style="margin-right:8px;color:var(--primary);"></i> Pengaturan Umum</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Nama Website</label>
+              <input type="text" class="form-control" value="Jelajahi Kekayaan Budaya Jawa">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tagline</label>
+              <input type="text" class="form-control" value="Temukan Pesona Budaya Jawa Timur">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Kontak</label>
+              <input type="email" class="form-control" value="info@nusantara.id">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bahasa Default</label>
+              <select class="form-control">
+                <option selected>Bahasa Indonesia</option>
+                <option>English</option>
+                <option>Jawa (Basa Jawi)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fas fa-bell" style="margin-right:8px;color:var(--primary);"></i> Notifikasi</span></div>
+          <div class="card-body">
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">Email untuk pesan baru</div>
+                <div class="toggle-desc">Terima notifikasi email setiap ada pesan masuk</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">Notifikasi event baru</div>
+                <div class="toggle-desc">Pemberitahuan ketika event baru ditambahkan</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">Laporan mingguan</div>
+                <div class="toggle-desc">Ringkasan performa setiap Senin pagi</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">Alert keamanan</div>
+                <div class="toggle-desc">Notifikasi login dan aktivitas mencurigakan</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><span class="card-title"><i class="fas fa-palette" style="margin-right:8px;color:var(--primary);"></i> Tampilan</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Tema Warna Utama</label>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <div style="width:28px;height:28px;background:#8B2500;border-radius:50%;cursor:pointer;border:2px solid var(--primary);"></div>
+                <div style="width:28px;height:28px;background:#1565C0;border-radius:50%;cursor:pointer;"></div>
+                <div style="width:28px;height:28px;background:#2E7D32;border-radius:50%;cursor:pointer;"></div>
+                <div style="width:28px;height:28px;background:#6A1B9A;border-radius:50%;cursor:pointer;"></div>
+                <div style="width:28px;height:28px;background:#E65100;border-radius:50%;cursor:pointer;"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Font Judul</label>
+              <select class="form-control">
+                <option selected>Playfair Display</option>
+                <option>Merriweather</option>
+                <option>Lora</option>
+              </select>
+            </div>
+            <div class="toggle-wrap" style="padding-top:0;">
+              <div>
+                <div class="toggle-label">Mode Gelap</div>
+                <div class="toggle-desc">Aktifkan tampilan gelap untuk admin</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fas fa-shield-alt" style="margin-right:8px;color:var(--primary);"></i> Keamanan</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Password Saat Ini</label>
+              <input type="password" class="form-control" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password Baru</label>
+              <input type="password" class="form-control" placeholder="Min. 8 karakter">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Konfirmasi Password Baru</label>
+              <input type="password" class="form-control" placeholder="Ulangi password baru">
+            </div>
+            <button class="btn btn-outline" style="width:100%;">Ganti Password</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ═══ AKUN ═══ -->
+  <div class="content" id="page-akun">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Akun Saya</div>
+        <div class="page-sub">Kelola profil, keamanan, dan preferensi akun Anda</div>
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Simpan Perubahan</button>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div style="position:relative;">
+          <div class="avatar" style="width:88px;height:88px;font-size:30px;">AS</div>
+          <button style="position:absolute;bottom:0;right:0;width:28px;height:28px;background:var(--primary);border:none;border-radius:50%;cursor:pointer;color:#fff;font-size:12px;" title="Ganti foto">
+            <i class="fas fa-camera"></i>
+          </button>
+        </div>
+        <div style="flex:1;">
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);">Admin Sanjaya</div>
+          <div style="font-size:13px;color:var(--text-muted);margin:4px 0;">admin@nusantara.id</div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <span class="badge badge-danger">Super Admin</span>
+            <span class="badge badge-success">Aktif</span>
+            <span class="badge badge-muted"><i class="fas fa-calendar" style="font-size:10px;"></i> Bergabung Jan 2025</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;color:var(--text-muted);">Terakhir login</div>
+          <div style="font-size:14px;font-weight:500;">Hari ini, 08:42</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">dari Surabaya, ID</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Info Profil -->
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><span class="card-title"><i class="fas fa-id-card" style="margin-right:8px;color:var(--primary);"></i>Informasi Profil</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Nama Lengkap</label>
+              <input type="text" class="form-control" value="Admin Sanjaya">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input type="text" class="form-control" value="adminsanjaya">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" value="admin@nusantara.id">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nomor Telepon</label>
+              <input type="tel" class="form-control" value="+62 812-3456-7890">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jabatan</label>
+              <input type="text" class="form-control" value="Super Administrator">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tentang Saya</label>
+              <textarea class="form-control">Administrator utama sistem Nusantara — mengelola konten budaya Jawa Timur sejak 2025.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sesi Aktif -->
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fas fa-shield-alt" style="margin-right:8px;color:var(--primary);"></i>Sesi Aktif</span></div>
+          <div class="card-body">
+            <ul class="notif-list">
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-desktop"></i></div>
+                <div style="flex:1;">
+                  <div class="notif-text" style="font-weight:500;">Chrome — Windows 11 <span class="badge badge-success" style="margin-left:6px;font-size:10px;">Saat ini</span></div>
+                  <div class="notif-time">Surabaya, Indonesia · Hari ini 08:42</div>
+                </div>
+              </li>
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-mobile-alt"></i></div>
+                <div style="flex:1;">
+                  <div class="notif-text">Safari — iPhone 15</div>
+                  <div class="notif-time">Surabaya, Indonesia · Kemarin 19:30</div>
+                </div>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);">Cabut</button>
+              </li>
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#E3F2FD;color:#1565C0;"><i class="fas fa-laptop"></i></div>
+                <div style="flex:1;">
+                  <div class="notif-text">Firefox — MacBook Pro</div>
+                  <div class="notif-time">Jakarta, Indonesia · 3 hari lalu</div>
+                </div>
+                <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);">Cabut</button>
+              </li>
+            </ul>
+            <button class="btn btn-outline" style="width:100%;margin-top:8px;color:var(--danger);border-color:var(--danger);">
+              <i class="fas fa-sign-out-alt"></i> Cabut Semua Sesi Lain
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Ganti Password -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><span class="card-title"><i class="fas fa-lock" style="margin-right:8px;color:var(--primary);"></i>Keamanan & Password</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Password Saat Ini</label>
+              <div class="pw-wrap">
+                <input type="password" class="form-control" placeholder="••••••••" id="cur-pw">
+                <button class="pw-toggle" type="button" onclick="togglePw2('cur-pw')"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password Baru</label>
+              <div class="pw-wrap">
+                <input type="password" class="form-control" placeholder="Min. 8 karakter" id="new-pw">
+                <button class="pw-toggle" type="button" onclick="togglePw2('new-pw')"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Konfirmasi Password Baru</label>
+              <div class="pw-wrap">
+                <input type="password" class="form-control" placeholder="Ulangi password baru" id="conf-pw">
+                <button class="pw-toggle" type="button" onclick="togglePw2('conf-pw')"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:12px;font-size:12px;color:var(--text-muted);margin-bottom:14px;">
+              <div style="font-weight:500;margin-bottom:6px;">Syarat password kuat:</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success);margin-right:6px;"></i>Minimal 8 karakter</div>
+              <div><i class="fas fa-check-circle" style="color:var(--success);margin-right:6px;"></i>Huruf besar & kecil</div>
+              <div><i class="fas fa-times-circle" style="color:var(--border);margin-right:6px;"></i>Minimal 1 angka</div>
+              <div><i class="fas fa-times-circle" style="color:var(--border);margin-right:6px;"></i>Minimal 1 karakter spesial</div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;">Ganti Password</button>
+          </div>
+        </div>
+
+        <!-- Autentikasi 2 Faktor -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><span class="card-title"><i class="fas fa-mobile-alt" style="margin-right:8px;color:var(--primary);"></i>Autentikasi 2 Faktor</span></div>
+          <div class="card-body">
+            <div class="toggle-wrap" style="padding-top:0;">
+              <div>
+                <div class="toggle-label">Aktifkan 2FA</div>
+                <div class="toggle-desc">Tingkatkan keamanan dengan verifikasi tambahan</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">Verifikasi via Email</div>
+                <div class="toggle-desc">Kirim kode OTP ke admin@nusantara.id</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">Verifikasi via SMS</div>
+                <div class="toggle-desc">Kirim kode OTP ke +62 812-xxxx-7890</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Riwayat Login -->
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fas fa-history" style="margin-right:8px;color:var(--primary);"></i>Riwayat Login</span></div>
+          <div class="card-body">
+            <ul class="notif-list">
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-check"></i></div>
+                <div>
+                  <div class="notif-text">Login berhasil</div>
+                  <div class="notif-time">Hari ini 08:42 · Chrome · Surabaya</div>
+                </div>
+              </li>
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-check"></i></div>
+                <div>
+                  <div class="notif-text">Login berhasil</div>
+                  <div class="notif-time">Kemarin 19:30 · Safari · Surabaya</div>
+                </div>
+              </li>
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#FFEBEE;color:#C62828;"><i class="fas fa-times"></i></div>
+                <div>
+                  <div class="notif-text">Percobaan login gagal</div>
+                  <div class="notif-time">3 hari lalu 14:12 · Unknown · Jakarta</div>
+                </div>
+              </li>
+              <li class="notif-item">
+                <div class="notif-icon-wrap" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-check"></i></div>
+                <div>
+                  <div class="notif-text">Login berhasil</div>
+                  <div class="notif-time">5 hari lalu 09:00 · Firefox · Surabaya</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGOUT CONFIRM MODAL (faux) -->
+  <div id="logout-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:380px;width:90%;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">👋</div>
+      <div style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:8px;">Keluar dari Admin?</div>
+      <div style="font-size:14px;color:var(--text-muted);margin-bottom:24px;">Anda akan diarahkan kembali ke halaman login.</div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="document.getElementById('logout-modal').style.display='none'">Batal</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="confirmLogout()">Ya, Keluar</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const USERS = [
+    { email: 'admin@nusantara.id', password: 'admin123', name: 'Admin Sanjaya', role: 'Super Admin', initials: 'AS' },
+    { email: 'editor@nusantara.id', password: 'editor123', name: 'Budi Rahayu', role: 'Editor', initials: 'BR' }
+  ];
+
+  const pages = {
+    'dashboard': 'Dashboard',
+    'events': 'Event & Kegiatan',
+    'kategori': 'Kategori Budaya',
+    'konten': 'Konten & Artikel',
+    'pengguna': 'Manajemen Pengguna',
+    'laporan': 'Laporan & Statistik',
+    'media': 'Media & Galeri',
+    'pesan': 'Pesan Masuk',
+    'pengaturan': 'Pengaturan',
+    'akun': 'Akun Saya'
+  };
+
+  function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pw = document.getElementById('login-password').value;
+    const user = USERS.find(u => u.email === email && u.password === pw);
+    const errEl = document.getElementById('login-error');
+    if (!user) {
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+    document.getElementById('login-screen').style.display = 'none';
+  }
+
+  function doLogout() {
+    const m = document.getElementById('logout-modal');
+    m.style.display = 'flex';
+  }
+
+  function confirmLogout() {
+    document.getElementById('logout-modal').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-password').value = '';
+  }
+
+  function navTo(page) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const target = document.querySelector('[data-page="' + page + '"]');
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('topbar-title').textContent = pages[page] || page;
+  }
+
+  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => navTo(item.dataset.page));
+  });
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.closest('.chip-wrap').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  function togglePw() {
+    const inp = document.getElementById('login-password');
+    const eye = document.getElementById('pw-eye');
+    if (inp.type === 'password') { inp.type = 'text'; eye.className = 'fas fa-eye-slash'; }
+    else { inp.type = 'password'; eye.className = 'fas fa-eye'; }
+  }
+
+  function togglePw2(id) {
+    const inp = document.getElementById(id);
+    if (!inp) return;
+    const btn = inp.nextElementSibling;
+    if (inp.type === 'password') { inp.type = 'text'; btn.innerHTML = '<i class="fas fa-eye-slash"></i>'; }
+    else { inp.type = 'password'; btn.innerHTML = '<i class="fas fa-eye"></i>'; }
+  }
+
+  function saveProfile() {
+    const btn = event.target;
+    btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+    btn.style.background = 'var(--success)';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+      btn.style.background = '';
+    }, 2000);
+  }
+
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+</script>
+</body>
+</html>
