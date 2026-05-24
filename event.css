@@ -396,20 +396,28 @@ body {
 }
 
 /* Footer */
-        .footer {
-        background-color: #4b2420;
-        color: #fff;
-        padding: 60px 80px;
-        font-family: Arial, sans-serif;
-        }
+       .footer{
+    width: 100%;
+    padding: 60px 0;
+}
 
-        .footer-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 40px;
-        }
+.footer-container{
+    width: 80%;
+    margin: auto;
+    background-color: #4b2420;
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 40px;
+
+    padding: 60px 80px;
+    border-radius: 8px;
+
+    box-sizing: border-box;
+}
 
         .footer-col {
         flex: 1;
@@ -467,6 +475,7 @@ body {
         border-top: 2px solid #b6a49c;
         width: 100%;
         }
+        
 .card-popup {
   width: 24rem;
   aspect-ratio: 1/1;
