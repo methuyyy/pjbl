@@ -338,7 +338,7 @@ ul { list-style: none; }
 
 .event-img {
   position: relative;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -644,9 +644,7 @@ footer {
 
 .footer-brand .brand-logo .logo-icon {
   width: 50px;
-  height: 32px;
-  background: var(--bg-white);
-  border-radius: 50%;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;

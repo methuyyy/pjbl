@@ -1,3 +1,12 @@
+<?php
+session_start();
+include 'koneksi.php';
+
+// Ambil data Kategori
+$query_kategori = mysqli_query($koneksi, "SELECT * FROM kategori");
+$query_event = mysqli_query($koneksi, "SELECT * FROM events ORDER BY id DESC LIMIT 3");
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -12,7 +21,7 @@
   <nav class="navbar" id="navbar">
     <div class="navbar-logo">
       <div class="logo-icon">
-        <images src="./images/navba.png" alt="logo pawarti"></images>
+       <img src="./images/navba.png" alt="logo pawarti">
       </div>
       <span>Pawarti</span>
     </div>
@@ -27,7 +36,7 @@
     <ul class="navbar-nav" id="navMenu">
       <li><a href="#hero" onclick="closeMenu()">Beranda</a></li>
       <li><a href="#events" onclick="closeMenu()">Event</a></li>
-      <li><a href="tentangkami1.html" onclick="closeMenu()">Tentang Kami</a></li>
+      <li><a href="tentangkami.html" onclick="closeMenu()">Tentang Kami</a></li>
       <li><a href="#kontak" onclick="closeMenu()">Kontak</a></li>
       <li><a href="#" class="btn-login" onclick="closeMenu()">Login</a></li>
     </ul>
@@ -38,7 +47,7 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg"><img src="./images/framehero.png" alt="Hero Background" width="1900" height="500"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>
@@ -118,8 +127,8 @@
       <!-- Card 1 -->
       <div class="event-card">
         <div class="event-img">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ballet.jpg/640px-Ballet.jpg" alt="The Indonesia Ballet Gala" />
-          <span class="event-badge badge-wayang">Wayang</span>
+          <img src="./images/swargaloka.png" alt="The Indonesia Ballet Gala" />
+          <span class="event-badge badge-wayang">Sendratari</span>
           <div class="event-actions">
             <div class="icon-btn">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -131,7 +140,7 @@
         </div>
         <div class="event-info">
           <h3>The Indonesia Ballet Gala</h3>
-          <p>Pertunjukan balet spektakuler yang menggabungkan unsur seni tari klasik dengan tradisi budaya Indonesia yang kaya.</p>
+          <p> kreasi tari klasik yang berasal dari Yogyakarta, diciptakan oleh Bathara Saverigadi Dewantoro. Tarian ini menggabungkan keanggunan budaya tari Jawa dengan estetika balet klasik, dan bermakna sebagai ungkapan kasih sayang serta harapan dari sebuah janji suci.</p>
           <div class="event-meta">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -152,7 +161,7 @@
       <!-- Card 2 -->
       <div class="event-card">
         <div class="event-img">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Barong_Dance_Bali_Indonesia.jpg/640px-Barong_Dance_Bali_Indonesia.jpg" alt="Gebug Ende Sari" />
+          <img src="./images/seblang.png" alt="Seblang oleh sari" />
           <span class="event-badge badge-tari">Tari</span>
           <div class="event-actions">
             <div class="icon-btn">
@@ -164,8 +173,8 @@
           </div>
         </div>
         <div class="event-info">
-          <h3>Gebug Ende Sari</h3>
-          <p>Pertunjukan tari tradisional Jawa yang memukau dengan kostum mewah dan gerakan yang penuh makna budaya leluhur.</p>
+          <h3>Seblang Oleh sari</h3>
+          <p>ritual adat sakral masyarakat Suku Osing di Desa Olehsari, Banyuwangi. Digelar untuk bersih desa dan tolak bala, tradisi ini menampilkan seorang penari yang dirasuki roh leluhur (tidak sadarkan diri), menari dengan mata terpejam mengikuti irama gamelan, dan melempar selendang untuk mengajak penonton menari bersama.</p>
           <div class="event-meta">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -186,7 +195,7 @@
       <!-- Card 3 -->
       <div class="event-card">
         <div class="event-img">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Ramayana_Ballet_Prambanan.jpg/640px-Ramayana_Ballet_Prambanan.jpg" alt="Festival Nasional Teng Proresgu" />
+          <img src="./images/reogponorogo.png" alt="Festival Nasional Reog Ponorogo" />
           <span class="event-badge badge-festival">Festival</span>
           <div class="event-actions">
             <div class="icon-btn">
@@ -198,8 +207,8 @@
           </div>
         </div>
         <div class="event-info">
-          <h3>Festival Nasional Teng Proresgu</h3>
-          <p>Festival kebudayaan nasional yang menampilkan beragam pertunjukan seni dan budaya Nusantara dalam satu panggung besar.</p>
+          <h3>Festival Nasional Reog Ponorogo</h3>
+          <p>festival budaya tahunan yang menampilkan kesenian tradisional Reog Ponorogo sebagai daya tarik utamanya. Digelar rutin sejak 1995 di Alun-Alun Ponorogo, acara ini memperebutkan Piala Presiden bergengsi dan menjadi bagian puncak dari perayaan rakyat Grebeg Suro.</p>
           <div class="event-meta">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -322,7 +331,7 @@
       <div class="footer-brand">
         <div class="brand-logo">
           <div class="logo-icon">
-            <images src="./image/logobg.png" alt="Logo Pawarti"></images>
+            <img src="./images/logobg.png" alt="Logo Pawarti">
           </div>
           <span>Pawarti</span>
         </div>
