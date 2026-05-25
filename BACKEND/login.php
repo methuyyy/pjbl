@@ -1,46 +1,55 @@
 <?php
-session_start();
-include '../koneksi.php';
+require_once 'config.php';
 
-if(isset($_POST['login'])){
+header('Content-Type: application/json');
 
-    $email    = mysqli_real_escape_string($koneksi, $_POST['email']);
-    $password = md5($_POST['password']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    $query = mysqli_query($koneksi, "
-        SELECT * FROM users
-        WHERE email='$email'
-        AND password='$password'
-    ");
+    // LOG UNTUK DEBUGGING (Hapus setelah selesai)
+    // error_log("Login Attempt - Email: " . $email . " Password: " . $password);
 
-    if(mysqli_num_rows($query) > 0){
-
-        $data = mysqli_fetch_assoc($query);
-
-        $_SESSION['id']    = $data['id'];
-        $_SESSION['email'] = $data['email'];
-        $_SESSION['role']  = $data['role'];
-
-        // redirect berdasarkan role
-        if($data['role'] == 'admin'){
-
-            header("Location: admin/dashboard.php");
-
-        } else {
-
-            header("Location: user/index.php");
-
-        }
-
-    } else {
-
-        echo "
-        <script>
-            alert('Email atau password salah!');
-            window.location='index.php';
-        </script>
-        ";
-
+    if (empty($email) || empty($password)) {
+        echo json_encode(['status' => 'error', 'message' => 'Email dan password wajib diisi.']);
+        exit;
     }
+
+    $stmt = $conn->prepare("SELECT id, password, first_name FROM users WHERE email = ?");
+    if (!$stmt) {
+        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $conn->error]);
+        exit;
+    }
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        // Cek jika password cocok dengan hash, atau (untuk development) jika password sama persis (plain text)
+        if (password_verify($password, $user['password']) || $password === $user['password']) {
+            // Start session and store user info
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['first_name'] = $user['first_name'];
+            
+            echo json_encode([
+                'status' => 'success', 
+                'message' => 'Login berhasil!', 
+                'user' => ['first_name' => $user['first_name']]
+            ]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Password salah.']);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Email tidak terdaftar.']);
+    }
+
+    $stmt->close();
+    $conn->close();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
 ?>
