@@ -670,7 +670,8 @@ input:focus + .input-icon,
         </div>
 
         <!-- Step 1: Akun -->
-        <div id="reg-step-1">
+        <form action="register.php" method="POST">
+            <div id="reg-step-1">
           <div class="panel-title">Buat akunmu</div>
           <div class="panel-sub">Daftarkan email dan password untuk mulai</div>
 
@@ -679,33 +680,55 @@ input:focus + .input-icon,
             <span id="reg-alert-msg">Terjadi kesalahan.</span>
           </div>
 
-          <div class="field">
-            <label class="field-label" for="reg-email">Email</label>
-            <div class="input-wrap">
-              <input type="email" id="reg-email" placeholder="nama@email.com" autocomplete="email">
-              <span class="input-icon">✉</span>
-            </div>
-            <div class="field-error" id="err-reg-email">Masukkan email yang valid</div>
-          </div>
+<form action="login.php" method="POST">
 
-          <div class="field">
-            <label class="field-label" for="reg-pw">Password</label>
-            <div class="input-wrap">
-              <input type="password" id="reg-pw" placeholder="Min. 8 karakter" autocomplete="new-password" oninput="checkStrength(this.value)">
-              <span class="input-icon">🔒</span>
-              <button class="pw-toggle" type="button" onclick="togglePw('reg-pw', this)" aria-label="Tampilkan password">👁</button>
-            </div>
-            <div class="strength-wrap" id="strength-wrap" style="display:none">
-              <div class="strength-bars">
-                <div class="s-bar" id="sb1"></div>
-                <div class="s-bar" id="sb2"></div>
-                <div class="s-bar" id="sb3"></div>
-                <div class="s-bar" id="sb4"></div>
-              </div>
-              <div class="strength-label" id="strength-label"></div>
-            </div>
-            <div class="field-error" id="err-reg-pw">Password min. 8 karakter</div>
-          </div>
+  <div class="field">
+    <label class="field-label" for="login-email">Email</label>
+    <div class="input-wrap">
+      <input 
+        type="email"
+        id="login-email"
+        name="email"
+        placeholder="nama@email.com"
+        autocomplete="email"
+        required
+      >
+      <span class="input-icon">✉</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="login-pw">Password</label>
+    <div class="input-wrap">
+      <input
+        type="password"
+        id="login-pw"
+        name="password"
+        placeholder="Masukkan password"
+        autocomplete="current-password"
+        required
+      >
+      <span class="input-icon">🔒</span>
+
+      <button
+        class="pw-toggle"
+        type="button"
+        onclick="togglePw('login-pw', this)"
+      >
+        👁
+      </button>
+    </div>
+  </div>
+
+  <div class="forgot-row">
+    <a href="#" class="forgot-link">Lupa password?</a>
+  </div>
+
+  <button type="submit" name="login" class="btn-submit">
+    <span class="btn-text">Masuk</span>
+  </button>
+
+</form>
 
           <div class="field">
             <label class="field-label" for="reg-pw2">Konfirmasi Password</label>

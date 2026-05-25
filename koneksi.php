@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $pass = ""; // Biasakan kosongkan jika menggunakan XAMPP default
-$db   = "db_pawarti";
+$db   = "pawarti";
 
 $koneksi = mysqli_connect($host, $user, $pass, $db);
 
