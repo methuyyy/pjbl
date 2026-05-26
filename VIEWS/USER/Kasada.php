@@ -1,29 +1,19 @@
+<?php
+session_start();
+include '../../BACKEND/config.php';
+?>
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
+    <title>Upacara Yadnya Kasada — Pawerti</title>
     <link rel="stylesheet" href="../../CSS/deskripsievent.css">
 </head>
 
 <body>
-    <header>
-        <div class="logo-text">
-            <img src="../../images/Group 9.png" alt="Logo PAWERTI">
-            <h1>PAWERTI</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../../USER/webTUY.html #beranda">Beranda</a></li>
-                <li><a href="../../USER/webTUY.html #event">Event</a></li>
-                <li><a href="../../USER/tentangkami.html">Tentang Kami</a></li>
-                <li><a href="../../USER/webTUY.html #kontak">Kontak</a></li>
-                <li><a href="../../USER/loginbin.html">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include '../COMPONENTS/navbar.php'; ?>
 
         <!-- Deskripsi Event -->
     <section class="deskripsi-event" id="deskripsi-event">
@@ -107,3 +97,6 @@
             </div>
         </div>
     </section>
+    <?php include '../COMPONENTS/footer.php'; ?>
+</body>
+</html>

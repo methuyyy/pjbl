@@ -8,29 +8,8 @@ $user_name = '';
 $user_pic = '';
 $user_email = '';
 
-if ($is_logged_in) {
-    $user_id = $_SESSION['user_id'];
-    $stmt = $conn->prepare("SELECT first_name, profile_pic, email FROM users WHERE id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($user = $result->fetch_assoc()) {
-        $user_name = $user['first_name'];
-        $user_pic = $user['profile_pic'];
-        $user_email = $user['email'];
-    }
-    $stmt->close();
-
-    // Hitung pesan yang belum dibaca
-    $stmt_unread = $conn->prepare("SELECT COUNT(*) as unread FROM messages m JOIN message_replies r ON m.id = r.message_id WHERE m.user_id = ? AND r.is_read = 0");
-    $stmt_unread->bind_param("i", $user_id);
-    $stmt_unread->execute();
-    $unread_count = $stmt_unread->get_result()->fetch_assoc()['unread'];
-    $stmt_unread->close();
-}
-
-// Ambil data Kategori
-$query_kategori = mysqli_query($conn, "SELECT * FROM kategori");
+// Ambil data Kategori dengan hitungan event
+$query_kategori = mysqli_query($conn, "SELECT k.*, (SELECT COUNT(*) FROM events e WHERE e.kategori_id = k.id) as total_events FROM kategori k");
 $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 3");
 ?>
 
@@ -41,132 +20,223 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pawarti – Jelajahi Kekayaan Budaya Jawa</title>
   <link rel="stylesheet" href="../../CSS/website.css" />
+  <!-- Font Awesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    .nav-user-profile {
+    /* Modern Card Design sync with events.php */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+      padding: 40px 60px; /* Ditambah padding kiri kanan agar center */
+      max-width: 1400px;
+      margin: 0 auto;
+      justify-content: center; /* Memastikan grid items di tengah jika kurang dari full width */
+    }
+
+    .modern-card {
       position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      background: #000;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+      text-align: left;
+      width: 100%; /* Memastikan lebar penuh di dalam grid cell */
+    }
+
+    .modern-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card-slider {
+      position: absolute;
+      inset: 0;
       display: flex;
-      align-items: center;
-      margin-left: 15px;
+      transition: transform 0.5s ease;
+      width: 100%;
+      height: 100%;
     }
-    .user-info-wrapper {
+
+    .slider-img {
+      min-width: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Poster tetap proporsional dan memenuhi kotak */
+      opacity: 0.7;
+      display: block;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
       display: flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      padding: 5px 12px;
-      border-radius: 50px;
-      transition: background 0.3s;
-      position: relative;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+      pointer-events: none; /* Klik tembus ke card jika diperlukan */
     }
-    .user-info-wrapper:hover {
-      background: rgba(0,0,0,0.05);
+    .card-overlay * { pointer-events: auto; } /* Aktifkan kembali klik untuk konten di dalamnya */
+
+    .slider-dots {
+      position: absolute;
+      bottom: 180px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 5;
     }
-    .nav-user-name {
-      font-weight: 500;
-      color: #333;
-      font-size: 14px;
-      position: relative;
-    }
-    .notification-badge {
-      background: #ff4d4d;
-      color: white;
-      font-size: 10px;
-      font-weight: 700;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 4px;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.4);
       border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: #fff;
+      width: 18px;
+      border-radius: 10px;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .card-location {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .card-info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding: 12px 0;
+      margin-bottom: 24px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .info-item i {
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-price {
+      background: rgba(255,255,255,0.15);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-reserve {
+      background: #fff;
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      flex: 1;
+      text-align: center;
+      margin-left: 15px;
+      transition: background 0.3s;
+    }
+
+    .btn-reserve:hover {
+      background: #f0f0f0;
+    }
+
+    /* Hero Section Responsiveness */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 600px; /* Sesuaikan tinggi hero */
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    .hero-bg {
       position: absolute;
-      top: -8px;
-      right: -10px;
-      border: 2px solid white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      line-height: 1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
     }
-    .user-dropdown {
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Gambar memenuhi layar tanpa gepeng */
+      object-position: center;
+    }
+    .hero-overlay {
       position: absolute;
-      top: 100%;
-      right: 0;
-      background: white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      border-radius: 8px;
-      padding: 10px 0;
-      min-width: 120px;
-      display: none;
-      z-index: 1000;
-      margin-top: 10px;
+      inset: 0;
+      background: rgba(0,0,0,0.2); /* Overlay agar teks terbaca */
+      z-index: 2;
     }
-    .user-dropdown.show {
-      display: block;
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: white;
+      max-width: 800px;
+      padding: 0 20px;
     }
-    .user-dropdown a {
-      display: block;
-      padding: 8px 20px;
-      color: #333;
-      text-decoration: none;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-    .user-dropdown a:hover {
-      background: #f5f5f5;
-      color: #8B2500;
+
+    @media (max-width: 768px) {
+      .hero {
+        height: 500px;
+      }
+      .events-grid {
+        padding: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+      .nav-container {
+        padding: 0 20px;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <div class="navbar-logo">
-      <div class="logo-icon">
-       <img src="../../images/navba.png" alt="logo pawarti">
-      </div>
-      <span>Pawarti</span>
-    </div>
-
-    <!-- Hamburger Button (mobile) -->
-    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <ul class="navbar-nav" id="navMenu">
-      <li><a href="#hero" onclick="closeMenu()">Beranda</a></li>
-      <li><a href="#events" onclick="closeMenu()">Event</a></li>
-      <li><a href="tentangkami.html" onclick="closeMenu()">Tentang Kami</a></li>
-      <li><a href="#kontak" onclick="closeMenu()">Kontak</a></li>
-      <?php if ($is_logged_in): ?>
-        <li class="nav-user-profile">
-          <div class="user-info-wrapper" id="userDropdownTrigger">
-            <span class="nav-user-name">
-              Halo, <?php echo htmlspecialchars($user_name); ?>
-              <?php if ($unread_count > 0): ?>
-                <span class="notification-badge"><?php echo $unread_count; ?></span>
-              <?php endif; ?>
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px; opacity: 0.7;"><path d="m6 9 6 6 6-6"/></svg>
-            <div class="user-dropdown" id="userDropdownMenu">
-              <a href="messages_user.php">Pesan Saya <?php echo ($unread_count > 0) ? "($unread_count)" : ""; ?></a>
-              <a href="../../BACKEND/logout.php">Keluar</a>
-            </div>
-          </div>
-        </li>
-      <?php else: ?>
-        <li><a href="../USER/loginbaru.php" class="btn-login" onclick="closeMenu()">Login</a></li>
-      <?php endif; ?>
-    </ul>
-  </nav>
-
-  <!-- Overlay mobile menu -->
-  <div class="nav-overlay" id="navOverlay" onclick="closeMenu()"></div>
+  <?php include '../COMPONENTS/navbar.php'; ?>
+  <?php include '../COMPONENTS/user_modals.php'; ?>
 
   <!-- ===== HERO ===== -->
   <section class="hero">
-    <div class="hero-bg"><img src="../../images/framehero.png" alt="Hero Background" width="1900" height="500"></div>
+    <div class="hero-bg"><img src="../../images/framehero.png" alt="Hero Background"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>
@@ -194,31 +264,28 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       <p>Jelajahi berbagai kategori event budaya Jawa yang tersedia</p>
     </div>
     <div class="categories-grid">
-
-  <div class="categories-grid">
-
-  <?php while($kategori = mysqli_fetch_assoc($query_kategori)) : ?>
-
-    <div class="category-card">
-
-      <div class="category-icon">
-        <i class="<?php echo $kategori['icon']; ?>"></i>
-      </div>
-
-      <h3>
-        <?php echo htmlspecialchars($kategori['nama_kategori']); ?>
-      </h3>
-
-      <p>
-        <?php echo htmlspecialchars($kategori['deskripsi']); ?>
-      </p>
-
-    </div>
-
-  <?php endwhile; ?>
-
-  </div>
-
+      <?php while($kategori = mysqli_fetch_assoc($query_kategori)) : ?>
+        <div class="category-card">
+          <div class="category-icon">
+            <?php 
+              $icon_class = $kategori['icon'];
+              // Jika tidak ada 'fa' di dalam string, tambahkan 'fas' sebagai default
+              if (strpos($icon_class, 'fa') === false) {
+                  $icon_class = "fas " . $icon_class;
+              } else if (strpos($icon_class, 'fa-') !== false && strpos($icon_class, 'fa ') === false && strpos($icon_class, 'fas') === false && strpos($icon_class, 'fab') === false && strpos($icon_class, 'far') === false) {
+                  // Jika ada fa- tapi tidak ada prefix fas/fab/far/fa
+                  $icon_class = "fas " . $icon_class;
+              }
+            ?>
+            <i class="<?php echo $icon_class; ?>"></i>
+          </div>
+          <h3><?php echo htmlspecialchars($kategori['nama_kategori']); ?></h3>
+          <div class="category-badge">
+            <?php echo $kategori['total_events']; ?> Event
+          </div>
+          <p><?php echo htmlspecialchars($kategori['deskripsi']); ?></p>
+        </div>
+      <?php endwhile; ?>
     </div>
   </section>
 
@@ -230,60 +297,61 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     </div>
 
     <div class="events-grid">
-
     <?php while($event = mysqli_fetch_assoc($query_event)) : ?>
-
-      <div class="event-card">
-
-        <div class="event-img">
-
-          <img 
-            src="../../images/storage/<?php echo $event['gambar']; ?>" 
-            alt="<?php echo htmlspecialchars($event['judul_event']); ?>"
-          >
-
-          <span class="event-badge">
-            <?php echo $event['status']; ?>
-          </span>
-
+      <div class="modern-card">
+        <div class="card-slider" id="slider-<?php echo $event['id']; ?>">
+          <img src="../../images/storage/<?php echo $event['gambar1'] ?: ($event['gambar'] ?: 'default.png'); ?>" class="slider-img" alt="">
+          <?php if (isset($event['gambar2']) && $event['gambar2']): ?>
+            <img src="../../images/storage/<?php echo $event['gambar2']; ?>" class="slider-img" alt="">
+          <?php endif; ?>
+          <?php if (isset($event['gambar3']) && $event['gambar3']): ?>
+            <img src="../../images/storage/<?php echo $event['gambar3']; ?>" class="slider-img" alt="">
+          <?php endif; ?>
         </div>
 
-        <div class="event-info">
+        <div class="slider-dots">
+          <div class="dot active"></div>
+          <?php if (isset($event['gambar2']) && $event['gambar2']): ?><div class="dot"></div><?php endif; ?>
+          <?php if (isset($event['gambar3']) && $event['gambar3']): ?><div class="dot"></div><?php endif; ?>
+        </div>
 
-          <h3>
-            <?php echo htmlspecialchars($event['judul_event']); ?>
-          </h3>
-
-          <p>
-            <?php echo htmlspecialchars($event['deskripsi']); ?>
-          </p>
-
-          <div class="event-meta">
-
-            <span>
-              📅
-              <?php echo $event['tanggal_event']; ?>
-            </span>
-
-            <span>
-              📍
-              <?php echo htmlspecialchars($event['lokasi']); ?>
-            </span>
-
+        <div class="card-overlay">
+          <h2 class="card-title"><?php echo htmlspecialchars($event['judul_event']); ?></h2>
+          <div class="card-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <?php echo htmlspecialchars($event['lokasi']); ?>
           </div>
 
+          <div class="card-info-row">
+            <div class="info-item">
+              <i class="fas fa-chair"></i>
+              <span>Total: <?php echo isset($event['total_kursi']) ? $event['total_kursi'] : '0'; ?></span>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-user-clock"></i>
+              <span>Sisa: <?php echo isset($event['sisa_kursi']) ? $event['sisa_kursi'] : '0'; ?></span>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-calendar-day"></i>
+              <span><?php echo date('d M', strtotime($event['tanggal_event'])); ?></span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <div class="card-price">
+              <?php echo ($event['harga'] > 0) ? 'Rp ' . number_format($event['harga'], 0, ',', '.') : 'Gratis'; ?>
+            </div>
+            <a href="events.php" class="btn-reserve">Pesan Sekarang</a>
+          </div>
         </div>
-
       </div>
-
     <?php endwhile; ?>
-
     </div>
 
     </div>
 
     <div class="events-more">
-      <a href="../../VIEWS/USER/events.html" class="btn-more" style="display:inline-block;text-decoration:none;">Lihat Semua Event</a>
+      <a href="events.php" class="btn-more" style="display:inline-block;text-decoration:none;">Lihat Semua Event</a>
     </div>
   </section>
 
@@ -381,91 +449,27 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
   </section>
 
   <!-- ===== FOOTER ===== -->
-  <footer>
-    <div class="footer-grid">
-
-      <div class="footer-brand">
-        <div class="brand-logo">
-          <div class="logo-icon">
-            <img src="../../images/logobg.png" alt="Logo Pawarti">
-          </div>
-          <span>Pawarti</span>
-        </div>
-        <p>Pawarti memperkenalkan kekayaan budaya Jawa melalui berbagai event seni yang inspiratif dan bermakna.</p>
-      </div>
-
-      <div class="footer-col">
-        <h4>Kategori</h4>
-        <ul>
-          <li><a href="#">Pertunjukan Seni</a></li>
-          <li><a href="#">Workshop Budaya</a></li>
-          <li><a href="#">Musik Tradisional</a></li>
-          <li><a href="#">Upacara Adat</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4>Kontak</h4>
-        <div class="contact-detail">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <span>info@pawarti.budayajawa@gmail.com</span>
-        </div>
-        <div class="contact-detail">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.82 19 19.45 19.45 0 0 1 5 12.18 19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91A16 16 0 0 0 14.09 15.91l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span>Telepon: 0800-5766-2459</span>
-        </div>
-        <div class="contact-detail">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>Jl Pemuda no.22 Kaum / Bon Kijon, Kota Malang Jawa T1mur</span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; 2024 Pawarti. Semua hak cipta dilindungi.</p>
-    </div>
-  </footer>
+  <?php include '../COMPONENTS/footer.php'; ?>
 
 
   <script>
-    const hamburger  = document.getElementById('hamburger');
-    const navMenu    = document.getElementById('navMenu');
-    const navOverlay = document.getElementById('navOverlay');
-    const navbar     = document.getElementById('navbar');
+    // Simple Slider Logic for Modern Cards
+    document.querySelectorAll('.modern-card').forEach(card => {
+      const slider = card.querySelector('.card-slider');
+      const dots = card.querySelectorAll('.dot');
+      let currentIdx = 0;
+      const totalImgs = slider.querySelectorAll('.slider-img').length;
 
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      navMenu.classList.toggle('open');
-      navOverlay.classList.toggle('show');
-      document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : '';
+      if (totalImgs > 1) {
+        setInterval(() => {
+          currentIdx = (currentIdx + 1) % totalImgs;
+          slider.style.transform = `translateX(-${currentIdx * 100}%)`;
+          dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === currentIdx);
+          });
+        }, 3000);
+      }
     });
-
-    function closeMenu() {
-      hamburger.classList.remove('open');
-      navMenu.classList.remove('open');
-      navOverlay.classList.remove('show');
-      document.body.style.overflow = '';
-    }
-
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 10);
-    });
-
-    // Dropdown User Click
-    const dropdownTrigger = document.getElementById('userDropdownTrigger');
-    const dropdownMenu    = document.getElementById('userDropdownMenu');
-
-    if (dropdownTrigger) {
-      dropdownTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle('show');
-      });
-
-      document.addEventListener('click', () => {
-        dropdownMenu.classList.remove('show');
-      });
-    }
 
     // Contact Form & Replies Logic
     const contactForm = document.getElementById('contactForm');
@@ -485,15 +489,17 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
         .then(data => {
           btn.disabled = false;
           btn.textContent = 'Kirim pesan sekarang';
-          alert(data.message);
           if (data.status === 'success') {
+            showAlert(data.message, 'Pesan Terkirim', 'success');
             contactForm.reset();
+          } else {
+            showAlert(data.message, 'Gagal Mengirim', 'error');
           }
         })
         .catch(err => {
           btn.disabled = false;
           btn.textContent = 'Kirim pesan sekarang';
-          alert('Terjadi kesalahan koneksi.');
+          showAlert('Terjadi kesalahan koneksi.', 'Error', 'error');
         });
       });
     }

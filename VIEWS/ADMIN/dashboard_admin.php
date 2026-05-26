@@ -234,13 +234,75 @@ body {
   cursor: pointer;
   border: none;
   transition: all .2s;
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  text-align: center;
 }
 .btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-light); }
+.btn-success, .btn-warning { background: var(--primary); color: #fff; }
+.btn-success:hover, .btn-warning:hover { background: var(--primary-light); }
+.btn-danger { background: #C62828; color: #fff; }
+.btn-danger:hover { background: #b71c1c; }
 .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 .btn-outline:hover { background: var(--primary-pale); }
 .btn-sm { padding: 6px 12px; font-size: 11.5px; border-radius: 6px; }
+
+/* Action Buttons in Table */
+.btn-action {
+  padding: 5px 15px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: #fff;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  cursor: pointer;
+  height: 34px;
+}
+.btn-action:hover { background: var(--primary); color: #fff; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(139,37,0,0.2); }
+
+/* Tombol Hapus Tetap Merah */
+.btn-action.btn-danger { border-color: #C62828; color: #C62828; }
+.btn-action.btn-danger:hover { background: #C62828; color: #fff; box-shadow: 0 2px 5px rgba(198,40,40,0.2); }
+
+/* Override style success/warning jadi coklat */
+.btn-action.btn-success, .btn-action.btn-warning { border-color: var(--primary); color: var(--primary); }
+.btn-action.btn-success:hover, .btn-action.btn-warning:hover { background: var(--primary); color: #fff; }
+
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(1); transform: none !important; box-shadow: none !important; }
+
+/* Menghilangkan Icon di semua tombol */
+.btn i, .btn-action i { display: none; }
+
+/* Table Improvements */
+.table-wrap { overflow-x: auto; width: 100%; }
+table { width: 100%; border-collapse: collapse; min-width: 900px; }
+thead th {
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: #FDFBFA;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  white-space: nowrap;
+}
+tbody td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-size: 12.5px;
+  color: var(--text);
+}
+.col-aksi { white-space: nowrap; width: 1%; padding-right: 20px; }
+ .col-id { width: 60px; text-align: center; }
+ .col-status { width: 140px; text-align: center; }
 
 /* ── STAT CARDS ── */
 .stat-grid {
@@ -558,7 +620,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .modal-icon svg { width: 26px; height: 26px; }
 .modal-title { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
 .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
-.modal-actions { display: flex; gap: 12px; }
+.modal-actions { display: flex; gap: 12px; justify-content: center; }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 5px; }
@@ -590,6 +652,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <div class="nav-section-label">Utama</div>
     <div class="nav-item active" data-page="dashboard"><i class="fas fa-th-large"></i> Dashboard</div>
     <div class="nav-item" data-page="event"><i class="fas fa-calendar-alt"></i> Event & Kegiatan</div>
+    <div class="nav-item" data-page="pesanan"><i class="fas fa-ticket-alt"></i> Pemesanan Tiket</div>
     <div class="nav-item" data-page="kategori"><i class="fas fa-layer-group"></i> Kategori Budaya</div>
     <div class="nav-item" data-page="pesan"><i class="fas fa-envelope"></i> Pesan Masuk</div>
 
@@ -748,7 +811,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <div class="card">
       <div class="table-wrap">
         <table id="user-table">
-          <thead><tr><th>Pengguna</th><th>Email</th><th>Kota</th><th>Telepon</th><th>Status</th><th>Aksi</th></tr></thead>
+          <thead><tr><th class="col-id">ID</th><th>Pengguna</th><th>Email</th><th>Kota</th><th>Telepon</th><th class="col-status">Status</th><th class="col-aksi">Aksi</th></tr></thead>
           <tbody id="user-list-body">
             <!-- Data akan dimuat via JS -->
           </tbody>
@@ -766,7 +829,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <div class="card">
       <div class="table-wrap">
         <table id="category-table">
-          <thead><tr><th>Nama Kategori</th><th>Icon</th><th>Deskripsi</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>Nama Kategori</th><th>Icon</th><th>Deskripsi</th><th class="col-aksi">Aksi</th></tr></thead>
           <tbody id="category-list-body"></tbody>
         </table>
       </div>
@@ -782,7 +845,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <div class="card">
       <div class="table-wrap">
         <table id="event-table">
-          <thead><tr><th>Event</th><th>Kategori</th><th>Tanggal</th><th>Lokasi</th><th>Status</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>Event</th><th>Kategori</th><th>Tanggal</th><th>Lokasi</th><th class="col-status">Status</th><th class="col-aksi">Aksi</th></tr></thead>
           <tbody id="event-list-body"></tbody>
         </table>
       </div>
@@ -897,7 +960,29 @@ textarea.form-control { resize: vertical; min-height: 90px; }
           <div class="form-group"><label class="form-label">Tanggal</label><input type="date" name="tanggal_event" id="event-tanggal" class="form-control"></div>
           <div class="form-group"><label class="form-label">Lokasi</label><input type="text" name="lokasi" id="event-lokasi" class="form-control"></div>
         </div>
-        <div class="form-group"><label class="form-label">Gambar Event</label><input type="file" name="gambar" class="form-control" accept="image/*"></div>
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Total Kursi</label><input type="number" name="total_kursi" id="event-total-kursi" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Sisa Kursi</label><input type="number" name="sisa_kursi" id="event-sisa-kursi" class="form-control"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Harga (IDR)</label><input type="number" name="harga" id="event-harga" class="form-control" placeholder="0 untuk Gratis"></div>
+        <div class="grid-2">
+          <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+            <input type="checkbox" name="is_featured" id="event-is-featured" value="1" style="width:20px; height:20px; cursor:pointer;">
+            <label class="form-label" style="margin-bottom:0; cursor:pointer;" for="event-is-featured">Jadikan Event Unggulan</label>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sub-judul Unggulan</label>
+            <input type="text" name="featured_sub" id="event-featured-sub" class="form-control" placeholder="Teks singkat penarik minat">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gambar Event (Maks 3)</label>
+          <div class="grid-3">
+            <input type="file" name="gambar1" class="form-control" accept="image/*">
+            <input type="file" name="gambar2" class="form-control" accept="image/*">
+            <input type="file" name="gambar3" class="form-control" accept="image/*">
+          </div>
+        </div>
         <div class="form-group"><label class="form-label">Deskripsi</label><textarea name="deskripsi" id="event-desc" class="form-control" rows="3"></textarea></div>
         <div class="modal-actions">
           <button type="button" class="btn btn-outline" onclick="closeEventModal()">Batal</button>
@@ -1052,6 +1137,82 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     </div>
   </div>
 
+  <!-- ═══ PEMESANAN TIKET ═══ -->
+  <div class="content" id="page-pesanan">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Manajemen Pemesanan Tiket</div>
+        <div class="page-sub">Kelola dan pantau seluruh pesanan tiket user</div>
+      </div>
+      <button class="btn btn-primary" onclick="loadBookings()"><i class="fas fa-sync"></i> Refresh Data</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-id">No</th>
+              <th>No Pemesanan</th>
+              <th>Event</th>
+              <th>Nama User</th>
+              <th>Tiket</th>
+              <th>Total Harga</th>
+              <th>Bukti</th>
+              <th class="col-status">Status</th>
+              <th>Tanggal Pesan</th>
+              <th class="col-aksi">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="bookings-list">
+            <!-- Data will be loaded via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Bukti Pembayaran -->
+  <div id="payment-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+    <div class="modal-box" style="background:#fff; padding:30px; border-radius:20px; max-width:500px; width:90%; text-align:center;">
+      <h3>Bukti Pembayaran</h3>
+      <div id="payment-img-container" style="margin:20px 0;">
+        <img id="payment-proof-img" src="" alt="Bukti Pembayaran" style="max-width:100%; border-radius:12px; border:1px solid #eee;">
+        <p id="no-payment-text" style="display:none; color:#999;">Belum ada bukti pembayaran yang diunggah.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" style="flex:1;" onclick="document.getElementById('payment-modal').style.display='none'">Tutup</button>
+        <button class="btn btn-primary" id="btn-approve-payment" style="flex:1;">Aprove Pembayaran</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Universal (Baru) -->
+  <div id="universal-confirm-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2500; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+    <div class="modal-box" style="background:#fff; padding:35px; border-radius:24px; max-width:420px; width:90%; text-align:center; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+      <div id="confirm-icon-wrap" style="width:70px; height:70px; background:#fff3e0; color:#f57c00; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 20px;">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h3 id="confirm-title" style="margin-bottom:10px; font-size:20px; font-weight:700;">Konfirmasi Tindakan</h3>
+      <p id="confirm-message" style="color:#666; margin-bottom:30px; font-size:14px; line-height:1.6;">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" style="flex:1; padding:12px; border-radius:50px; font-weight:600;" onclick="closeConfirmModal()">Batal</button>
+        <button class="btn btn-primary" id="btn-universal-confirm" style="flex:1; padding:12px; border-radius:50px; font-weight:600;">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Success Modal Admin -->
+  <div id="admin-success-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+    <div class="modal-box" style="background:#fff; padding:40px; border-radius:24px; max-width:400px; width:90%; text-align:center; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+      <div style="width:80px; height:80px; background:#e8f5e9; color:#2e7d32; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:40px; margin:0 auto 20px;">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3 style="margin-bottom:10px; font-size:22px; font-weight:700;">Berhasil!</h3>
+      <p id="admin-success-message" style="color:#666; margin-bottom:25px; font-size:14px;">Data telah berhasil diperbarui.</p>
+      <button class="btn btn-primary" style="width:100%; padding:14px; border-radius:50px; font-weight:700;" onclick="closeAdminSuccessModal()">Oke, Lanjutkan</button>
+    </div>
+  </div>
+
   <!-- ═══ PENGATURAN ═══ -->
   <div class="content" id="page-pengaturan">
     <div class="page-header"><div><div class="page-title">Pengaturan</div><div class="page-sub">Konfigurasi sistem dan preferensi website</div></div><button class="btn btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button></div>
@@ -1163,6 +1324,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   const pages = {
     dashboard: 'Dashboard',
     event:     'Event & Kegiatan',
+    pesanan:   'Pemesanan Tiket',
     kategori:  'Kategori Budaya',
     pengguna:  'Manajemen Pengguna',
     laporan:   'Laporan & Statistik',
@@ -1173,6 +1335,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   };
 
   function navTo(page) {
+    if (page === 'pesanan') loadBookings();
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const t = document.querySelector('[data-page="' + page + '"]');
     if (t) t.classList.add('active');
@@ -1216,8 +1379,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
                 <td><span class="badge ${statusBadge}">${msg.status}</span></td>
                 <td>${msg.created_at}</td>
                 <td>
-                  <button class="btn btn-outline btn-sm" onclick="replyMessage(${msg.id})">Balas</button>
-                  <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="deleteMessage(${msg.id})">Hapus</button>
+                  <div style="display:flex;gap:6px;">
+                    <button class="btn-action btn-success" onclick="replyMessage(${msg.id})" title="Balas Pesan">
+                      <i class="fas fa-reply"></i> Balas
+                    </button>
+                    <button class="btn-action btn-danger" onclick="deleteMessage(${msg.id})" title="Hapus Pesan">
+                      <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
+                  </div>
                 </td>
               </tr>
             `;
@@ -1258,23 +1427,26 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     .then(res => res.json())
     .then(data => {
       if (data.status === 'success') {
-        alert('Balasan terkirim!');
+        showAdminSuccess('Balasan terkirim!');
         closeReplyModal();
         loadMessages();
       } else {
-        alert(data.message);
+        showConfirmModal('Gagal', data.message, null, 'danger');
       }
     });
   };
 
   function deleteMessage(id) {
-    if (confirm('Hapus pesan ini?')) {
+    showConfirmModal('Hapus Pesan?', 'Apakah Anda yakin ingin menghapus pesan ini?', () => {
       fetch(`../../BACKEND/admin_messages.php?action=delete&id=${id}`)
         .then(res => res.json())
         .then(data => {
-          if (data.status === 'success') loadMessages();
+          if (data.status === 'success') {
+            showAdminSuccess('Pesan berhasil dihapus');
+            loadMessages();
+          }
         });
-    }
+    }, 'danger');
   }
 
   document.querySelectorAll('.nav-item[data-page]').forEach(item => {
@@ -1296,6 +1468,187 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     window.location.href = '../../BACKEND/logout_admin.php';
   }
 
+  // --- CUSTOM CONFIRM MODAL ---
+  let onConfirmCallback = null;
+  function showConfirmModal(title, msg, callback, type = 'warning') {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-message').textContent = msg;
+    const iconWrap = document.getElementById('confirm-icon-wrap');
+    const confirmBtn = document.getElementById('btn-universal-confirm');
+    
+    if (type === 'danger') {
+      iconWrap.style.background = '#ffebee';
+      iconWrap.style.color = '#c62828';
+      confirmBtn.style.background = '#c62828';
+      confirmBtn.style.borderColor = '#c62828';
+    } else {
+      iconWrap.style.background = '#fff3e0';
+      iconWrap.style.color = '#f57c00';
+      confirmBtn.style.background = 'var(--primary)';
+      confirmBtn.style.borderColor = 'var(--primary)';
+    }
+    
+    onConfirmCallback = callback;
+    document.getElementById('universal-confirm-modal').style.display = 'flex';
+  }
+
+  function closeConfirmModal() {
+    document.getElementById('universal-confirm-modal').style.display = 'none';
+    onConfirmCallback = null;
+  }
+
+  document.getElementById('btn-universal-confirm').onclick = function() {
+    if (onConfirmCallback) onConfirmCallback();
+    closeConfirmModal();
+  };
+
+  // --- CUSTOM SUCCESS MODAL ---
+  function showAdminSuccess(msg) {
+    document.getElementById('admin-success-message').textContent = msg;
+    document.getElementById('admin-success-modal').style.display = 'flex';
+  }
+  function closeAdminSuccessModal() {
+    document.getElementById('admin-success-modal').style.display = 'none';
+  }
+
+  // --- BOOKING MANAGEMENT JS ---
+  let currentBookingId = null;
+
+  function loadBookings() {
+    fetch('../../BACKEND/admin_bookings.php?action=list')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          const tbody = document.getElementById('bookings-list');
+          tbody.innerHTML = '';
+          data.data.forEach((b, index) => {
+            const tr = document.createElement('tr');
+            let badgeClass = 'badge-warning';
+            if (b.status === 'Berhasil') badgeClass = 'badge-success';
+            if (b.status === 'Dibatalkan') badgeClass = 'badge-danger';
+            if (b.status === 'Menunggu Verifikasi') badgeClass = 'badge-info';
+
+            const proofBtn = b.bukti_pembayaran 
+              ? `<button class="btn-action" onclick="viewPayment('${b.bukti_pembayaran}', ${b.id})"><i class="far fa-image"></i> Cek</button>`
+              : `<span style="color:#999;font-size:11px;">Belum Unggah</span>`;
+
+            // Logika: Tombol aksi aktif jika sudah dicek ATAU status sudah Berhasil
+            const hasChecked = viewedPayments.includes(b.id);
+            const isDibatalkan = b.status === 'Dibatalkan';
+            const isBerhasil = b.status === 'Berhasil';
+            
+            let isDisabled = '';
+            let titleAttr = '';
+            
+            if (isDibatalkan) {
+                isDisabled = 'disabled';
+                titleAttr = 'Pesanan sudah dibatalkan';
+            } else if (b.status === 'Menunggu Verifikasi' && !hasChecked) {
+                isDisabled = 'disabled';
+                titleAttr = 'Harap cek pembayaran terlebih dahulu';
+            }
+
+            tr.innerHTML = `
+              <td>${index + 1}</td>
+              <td><span style="font-family: monospace; font-weight: 600; color: var(--primary);">${b.no_pemesanan}</span></td>
+              <td><strong>${b.judul_event}</strong></td>
+              <td>${b.first_name} ${b.last_name || ''}<br><small>${b.email}</small></td>
+              <td>${b.jumlah_tiket}</td>
+              <td>Rp ${parseInt(b.total_harga).toLocaleString('id-ID')}</td>
+              <td>${proofBtn}</td>
+              <td><span class="badge ${badgeClass}">${b.status}</span></td>
+              <td>${new Date(b.tanggal_booking).toLocaleDateString('id-ID')}</td>
+              <td>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn-action btn-success" onclick="updateBookingStatus(${b.id}, 'Berhasil')" ${isDisabled} title="${titleAttr || 'Approve Pesanan'}">
+                    Aprove
+                  </button>
+                  <button class="btn-action btn-warning" onclick="updateBookingStatus(${b.id}, 'Dibatalkan')" ${isDisabled} title="${titleAttr || 'Batalkan Pesanan'}">
+                    Batal
+                  </button>
+                  <button class="btn-action btn-danger" onclick="deleteBooking(${b.id})" title="Hapus Data Pesanan">
+                    Hapus
+                  </button>
+                </div>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      });
+  }
+
+  const viewedPayments = []; // Array untuk melacak pesanan yang sudah dicek
+
+  function viewPayment(img, id) {
+    if (!viewedPayments.includes(id)) viewedPayments.push(id);
+    currentBookingId = id;
+    const modal = document.getElementById('payment-modal');
+    const proofImg = document.getElementById('payment-proof-img');
+    const noText = document.getElementById('no-payment-text');
+    const approveBtn = document.getElementById('btn-approve-payment');
+
+    if (img) {
+      proofImg.src = '../../images/storage/payments/' + img;
+      proofImg.style.display = 'block';
+      noText.style.display = 'none';
+      approveBtn.style.display = 'block';
+    } else {
+      proofImg.style.display = 'none';
+      noText.style.display = 'block';
+      approveBtn.style.display = 'none';
+    }
+    
+    approveBtn.onclick = () => {
+      updateBookingStatus(currentBookingId, 'Berhasil');
+      modal.style.display = 'none';
+    };
+
+    modal.style.display = 'flex';
+  }
+
+  function updateBookingStatus(id, status) {
+    const title = status === 'Berhasil' ? 'Konfirmasi Pembayaran?' : 'Batalkan Pesanan?';
+    const msg = status === 'Berhasil' 
+      ? 'Apakah Anda yakin bukti pembayaran sudah valid dan ingin mengonfirmasi pesanan ini?' 
+      : 'Apakah Anda yakin ingin membatalkan pesanan ini? Stok kursi akan dikembalikan.';
+    
+    showConfirmModal(title, msg, () => {
+      const formData = new FormData();
+      formData.append('id', id);
+      formData.append('status', status);
+
+      fetch('../../BACKEND/admin_bookings.php?action=update_status', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          showAdminSuccess(data.message);
+          loadBookings();
+        } else {
+          showConfirmModal('Gagal', data.message, null, 'danger');
+        }
+      });
+    }, status === 'Berhasil' ? 'warning' : 'danger');
+  }
+
+  function deleteBooking(id) {
+    showConfirmModal('Hapus Pesanan?', 'Data pesanan akan dihapus permanen. Stok kursi akan dikembalikan jika status pesanan adalah Berhasil.', () => {
+      fetch('../../BACKEND/admin_bookings.php?action=delete&id=' + id)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            showAdminSuccess(data.message);
+            loadBookings();
+          } else {
+            showConfirmModal('Gagal', data.message, null, 'danger');
+          }
+        });
+    }, 'danger');
+  }
+
   // --- User Management JS ---
   function loadUsers() {
     fetch('../../BACKEND/admin_users.php?action=list')
@@ -1310,6 +1663,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
             
             body.innerHTML += `
               <tr>
+                <td>#${user.id}</td>
                 <td>
                   <div style="display:flex;align-items:center;gap:10px;">
                     ${avatar ? `<img src="${avatar}" class="avatar" style="width:30px;height:30px; object-fit:cover;">` : `<div class="avatar" style="width:30px;height:30px;font-size:11px;">${initials}</div>`}
@@ -1321,8 +1675,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
                 <td>${user.phone || '-'}</td>
                 <td><span class="badge badge-success">Aktif</span></td>
                 <td>
-                  <button class="btn btn-outline btn-sm" onclick="editUser(${user.id})">Edit</button>
-                  <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="deleteUser(${user.id})">Hapus</button>
+                  <div style="display:flex;gap:6px;">
+                    <button class="btn-action btn-warning" onclick="editUser(${user.id})" title="Edit User">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-action btn-danger" onclick="deleteUser(${user.id})" title="Hapus User">
+                      <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
+                  </div>
                 </td>
               </tr>
             `;
@@ -1363,27 +1723,28 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     .then(res => res.json())
     .then(data => {
       if (data.status === 'success') {
-        alert('User berhasil diperbarui!');
+        showAdminSuccess('User berhasil diperbarui!');
         closeEditModal();
         loadUsers();
       } else {
-        alert(data.message);
+        showConfirmModal('Gagal', data.message, null, 'danger');
       }
     });
   };
 
   function deleteUser(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
+    showConfirmModal('Hapus User?', 'Apakah Anda yakin ingin menghapus user ini? Data tidak dapat dikembalikan.', () => {
       fetch(`../../BACKEND/admin_users.php?action=delete&id=${id}`)
         .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
+            showAdminSuccess('User berhasil dihapus');
             loadUsers();
           } else {
             alert(data.message);
           }
         });
-    }
+    }, 'danger');
   }
 
   // --- Category Management JS ---
@@ -1401,8 +1762,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
                 <td><i class="fas ${cat.icon || 'fa-tag'}"></i> ${cat.icon || '-'}</td>
                 <td>${cat.deskripsi || '-'}</td>
                 <td>
-                  <button class="btn btn-outline btn-sm" onclick="editCategory(${cat.id})">Edit</button>
-                  <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="deleteCategory(${cat.id})">Hapus</button>
+                  <div style="display:flex;gap:6px;">
+                    <button class="btn-action btn-warning" onclick="editCategory(${cat.id})" title="Edit Kategori">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-action btn-danger" onclick="deleteCategory(${cat.id})" title="Hapus Kategori">
+                      <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
+                  </div>
                 </td>
               </tr>
             `;
@@ -1450,18 +1817,26 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     .then(res => res.json())
     .then(data => {
       if (data.status === 'success') {
+        showAdminSuccess('Kategori berhasil disimpan!');
         closeCategoryModal();
         loadCategories();
-      } else { alert(data.message); }
+      } else { 
+        showConfirmModal('Gagal', data.message, null, 'danger'); 
+      }
     });
   };
 
   function deleteCategory(id) {
-    if (confirm('Hapus kategori ini?')) {
+    showConfirmModal('Hapus Kategori?', 'Apakah Anda yakin ingin menghapus kategori ini secara permanen?', () => {
       fetch(`../../BACKEND/admin_categories.php?action=delete&id=${id}`)
         .then(res => res.json())
-        .then(data => { if (data.status === 'success') loadCategories(); });
-    }
+        .then(data => { 
+          if (data.status === 'success') {
+            showAdminSuccess(data.message);
+            loadCategories();
+          }
+        });
+    }, 'danger');
   }
 
   // --- Event Management JS ---
@@ -1473,17 +1848,30 @@ textarea.form-control { resize: vertical; min-height: 90px; }
           const body = document.getElementById('event-list-body');
           body.innerHTML = '';
           data.data.forEach(ev => {
-            const img = ev.gambar ? `<img src="../../images/storage/${ev.gambar}" class="avatar" style="width:40px;height:30px;border-radius:4px;object-fit:cover;">` : '';
+            const img = ev.gambar1 ? `<img src="../../images/storage/${ev.gambar1}" style="width:50px;height:35px;border-radius:6px;object-fit:cover;box-shadow: 0 2px 4px rgba(0,0,0,0.1);">` : '';
+            
+            let statusBadge = '';
+            if (ev.status === 'Aktif') statusBadge = '<span class="badge badge-success" style="background:#E8F5E9; color:#2E7D32;">Aktif</span>';
+            else if (ev.status === 'Mendatang') statusBadge = '<span class="badge badge-warning" style="background:#FFF3E0; color:#E65100;">Mendatang</span>';
+            else statusBadge = `<span class="badge badge-muted">${ev.status}</span>`;
+
             body.innerHTML += `
               <tr>
-                <td><div style="display:flex;align-items:center;gap:10px;">${img}<strong>${ev.judul_event}</strong></div></td>
-                <td>${ev.nama_kategori || 'Tanpa Kategori'}</td>
-                <td>${ev.tanggal_event || '-'}</td>
-                <td>${ev.lokasi || '-'}</td>
-                <td><span class="badge ${ev.status === 'Aktif' ? 'badge-success' : 'badge-warning'}">${ev.status}</span></td>
                 <td>
-                  <button class="btn btn-outline btn-sm" onclick="editEvent(${ev.id})">Edit</button>
-                  <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="deleteEvent(${ev.id})">Hapus</button>
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    ${img}
+                    <span style="font-weight:600; color:var(--text);">${ev.judul_event}</span>
+                  </div>
+                </td>
+                <td style="color:var(--text-muted);">${ev.nama_kategori || 'Tanpa Kategori'}</td>
+                <td style="color:var(--text-muted);">${ev.tanggal_event || '-'}</td>
+                <td style="color:var(--text-muted);">${ev.lokasi || '-'}</td>
+                <td>${statusBadge}</td>
+                <td>
+                  <div style="display:flex;gap:8px;">
+                    <button class="btn-action" onclick="editEvent(${ev.id})" title="Edit Event" style="padding: 5px 12px; height: 30px; font-size: 11px;">Edit</button>
+                    <button class="btn-action btn-danger" onclick="deleteEvent(${ev.id})" title="Hapus Event" style="padding: 5px 12px; height: 30px; font-size: 11px;">Hapus</button>
+                  </div>
                 </td>
               </tr>
             `;
@@ -1529,8 +1917,13 @@ textarea.form-control { resize: vertical; min-height: 90px; }
           document.getElementById('event-judul').value = ev.judul_event;
           document.getElementById('event-tanggal').value = ev.tanggal_event;
           document.getElementById('event-lokasi').value = ev.lokasi;
+          document.getElementById('event-total-kursi').value = ev.total_kursi || 0;
+          document.getElementById('event-sisa-kursi').value = ev.sisa_kursi || 0;
+          document.getElementById('event-harga').value = ev.harga || 0;
           document.getElementById('event-status').value = ev.status;
           document.getElementById('event-desc').value = ev.deskripsi;
+          document.getElementById('event-is-featured').checked = ev.is_featured == 1;
+          document.getElementById('event-featured-sub').value = ev.featured_sub || '';
           loadCategoryOptions(ev.kategori_id);
           document.getElementById('event-modal').style.display = 'flex';
         }
@@ -1549,18 +1942,26 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     .then(res => res.json())
     .then(data => {
       if (data.status === 'success') {
+        showAdminSuccess('Event berhasil disimpan!');
         closeEventModal();
         loadEvents();
-      } else { alert(data.message); }
+      } else { 
+        showConfirmModal('Gagal', data.message, null, 'danger'); 
+      }
     });
   };
 
   function deleteEvent(id) {
-    if (confirm('Hapus event ini?')) {
+    showConfirmModal('Hapus Event?', 'Apakah Anda yakin ingin menghapus event ini? Seluruh data terkait akan hilang.', () => {
       fetch(`../../BACKEND/admin_events.php?action=delete&id=${id}`)
         .then(res => res.json())
-        .then(data => { if (data.status === 'success') loadEvents(); });
-    }
+        .then(data => { 
+          if (data.status === 'success') {
+            showAdminSuccess(data.message);
+            loadEvents();
+          }
+        });
+    }, 'danger');
   }
 
   // Load users when page is "pengguna"

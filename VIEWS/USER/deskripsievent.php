@@ -1,55 +1,46 @@
+<?php
+session_start();
+include '../../BACKEND/config.php';
+?>
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
+    <title>Seblang OlehSari — Pawerti</title>
     <link rel="stylesheet" href="../../CSS/deskripsievent.css">
 </head>
 
 <body>
-    <header>
-        <div class="logo-text">
-            <img src="../../images/Group 9.png" alt="Logo PAWERTI">
-            <h1>PAWERTI</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../../USER/webTUY.html #beranda">Beranda</a></li>
-                <li><a href="../../USER/webTUY.html #event">Event</a></li>
-                <li><a href="../../USER/tentangkami.html">Tentang Kami</a></li>
-                <li><a href="../../USER/webTUY.html #kontak">Kontak</a></li>
-                <li><a href="../../USER/loginbin.html">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include '../COMPONENTS/navbar.php'; ?>
 
         <!-- Deskripsi Event -->
     <section class="deskripsi-event" id="deskripsi-event">
         <h2>Deskripsi <br> Event</h2>
         <div class="event-container">
             <div class="event-text">
-                <h3>Festival Nasional Reog Ponorogo</h3>
-                <p><strong>Festival Nasional Reog Ponorogo</strong></p>
+                <h3>Seblang OlehSari</h3>
+                <p><strong>Seblang Olehsari: Tarian Sakral untuk Menolak Bala</strong></p>
                 <p>
-                    Nasional Reog Ponorogo adalah acara tahunan di Kabupaten Ponorogo, Jawa Timur.
-                    Acara ini merupakan kompetisi dan pameran seni yang bertujuan untuk melestarikan dan
-                    mempromosikan seni Reog Ponorogo, salah satu seni budaya di Indonesia.
+                    Seblang Olehsari adalah tarian ritual sakral dari suku Osing di Banyuwangi.
+                    Tujuannya untuk menolak bala atau mengusir roh jahat, dan penarinya adalah
+                    seorang perempuan yang telah menopause.
                 </p>
                 <p>
-                   Para Peserta dari berbagai daerah menampilkan pertunjukan Reog terbaik mereka. Penilaian
-                   meliputi gerak tari, kostum, dan musik pengiring yang unik. Festival inijuga sering
-                   dimeriahkan dengan acara pendukung seperti pameran dan karnaval.
+                    Ritual ini diiringi musik gamelan sederhana. Puncaknya, penari akan
+                    melemparkan properti yang ia pegang ke arah penonton, dan siapa pun yang
+                    menangkapnya dipercaya akan mendapat keberuntungan.
                 </p>
                 <p>
-                   Festival ini berperan penting dalam menjaga kelangsungan seni Reog Ponorogo sebagai warisan budaya. Event ini tidak hanya menjadi ajang unjuk kebolehan, tetapi juga sarana edukasi dan promosi budaya kepada masyarakat luas.
+                    Secara etimologi, kata "Seblang" bermakna "keburukan telah hilang."
+                    Ritual ini menjadi simbol pembersihan desa dari segala hal negatif.
                 </p>
                 <button class="btn-selengkapnya">Baca Selengkapnya</button>
             </div>
 
             <div class="event-image">
-                <img src="../../images/reogponorogo.png" alt="Seblang OlehSari">
+                <img src="../../images/seblang.png" alt="Seblang OlehSari">
             </div>
         </div>
     </section>
@@ -61,15 +52,15 @@
         </div>
         <div class="info-card">
             <img src="../../images/dateicon.png" alt="Tanggal">
-            <p>27 Juni 2026</p>
+            <p>Setelah Idul Fitri</p>
         </div>
         <div class="info-card">
             <img src="../../images/locationicon.png" alt="Lokasi">
-            <p>Panggung Utama Alun-alun Kabupaten Ponorogo</p>
+            <p>Desa Olehsari, Kec. Glagah, Banyuwangi</p>
         </div>
         <div class="info-card">
             <img src="../../images/peopleicon.png" alt="Penonton">
-            <p>4.000 Penonton</p>
+            <p>5.000 Penonton</p>
         </div>
     </section>
 
@@ -111,3 +102,6 @@
             </div>
         </div>
     </section>
+    <?php include '../COMPONENTS/footer.php'; ?>
+</body>
+</html>

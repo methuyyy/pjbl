@@ -33,18 +33,30 @@ if ($action === 'list') {
     $lokasi = $_POST['lokasi'];
     $kategori_id = intval($_POST['kategori_id']);
     $status = $_POST['status'];
-    $gambar = '';
+    $total_kursi = intval($_POST['total_kursi'] ?? 0);
+    $sisa_kursi = intval($_POST['sisa_kursi'] ?? 0);
+    $harga = floatval($_POST['harga'] ?? 0);
+    $is_featured = intval($_POST['is_featured'] ?? 0);
+    $featured_sub = $_POST['featured_sub'] ?? '';
 
-    if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
-        $ext = strtolower(pathinfo($_FILES['gambar']['name'], PATHINFO_EXTENSION));
-        $newName = md5(time() . $_FILES['gambar']['name']) . '.' . $ext;
-        if (move_uploaded_file($_FILES['gambar']['tmp_name'], '../images/storage/' . $newName)) {
-            $gambar = $newName;
+    // If this is featured, un-feature others
+    if ($is_featured === 1) {
+        $conn->query("UPDATE events SET is_featured = 0");
+    }
+
+    $images = ['', '', ''];
+    for ($i = 1; $i <= 3; $i++) {
+        if (isset($_FILES['gambar' . $i]) && $_FILES['gambar' . $i]['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['gambar' . $i]['name'], PATHINFO_EXTENSION));
+            $newName = md5(time() . $_FILES['gambar' . $i]['name'] . $i) . '.' . $ext;
+            if (move_uploaded_file($_FILES['gambar' . $i]['tmp_name'], '../images/storage/' . $newName)) {
+                $images[$i-1] = $newName;
+            }
         }
     }
 
-    $stmt = $conn->prepare("INSERT INTO events (judul_event, deskripsi, tanggal_event, lokasi, kategori_id, status, gambar) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssiss", $judul, $deskripsi, $tanggal, $lokasi, $kategori_id, $status, $gambar);
+    $stmt = $conn->prepare("INSERT INTO events (judul_event, deskripsi, tanggal_event, lokasi, kategori_id, status, gambar1, gambar2, gambar3, total_kursi, sisa_kursi, harga, is_featured, featured_sub) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssissssiiiis", $judul, $deskripsi, $tanggal, $lokasi, $kategori_id, $status, $images[0], $images[1], $images[2], $total_kursi, $sisa_kursi, $harga, $is_featured, $featured_sub);
     
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Event berhasil ditambahkan.']);
@@ -60,18 +72,30 @@ if ($action === 'list') {
     $lokasi = $_POST['lokasi'];
     $kategori_id = intval($_POST['kategori_id']);
     $status = $_POST['status'];
+    $total_kursi = intval($_POST['total_kursi'] ?? 0);
+    $sisa_kursi = intval($_POST['sisa_kursi'] ?? 0);
+    $harga = floatval($_POST['harga'] ?? 0);
+    $is_featured = intval($_POST['is_featured'] ?? 0);
+    $featured_sub = $_POST['featured_sub'] ?? '';
 
-    $sql = "UPDATE events SET judul_event=?, deskripsi=?, tanggal_event=?, lokasi=?, kategori_id=?, status=?";
-    $params = [$judul, $deskripsi, $tanggal, $lokasi, $kategori_id, $status];
-    $types = "ssssis";
+    // If this is featured, un-feature others
+    if ($is_featured === 1) {
+        $conn->query("UPDATE events SET is_featured = 0");
+    }
 
-    if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
-        $ext = strtolower(pathinfo($_FILES['gambar']['name'], PATHINFO_EXTENSION));
-        $newName = md5(time() . $_FILES['gambar']['name']) . '.' . $ext;
-        if (move_uploaded_file($_FILES['gambar']['tmp_name'], '../images/storage/' . $newName)) {
-            $sql .= ", gambar=?";
-            $params[] = $newName;
-            $types .= "s";
+    $sql = "UPDATE events SET judul_event=?, deskripsi=?, tanggal_event=?, lokasi=?, kategori_id=?, status=?, total_kursi=?, sisa_kursi=?, harga=?, is_featured=?, featured_sub=?";
+    $params = [$judul, $deskripsi, $tanggal, $lokasi, $kategori_id, $status, $total_kursi, $sisa_kursi, $harga, $is_featured, $featured_sub];
+    $types = "ssssisiiiis";
+
+    for ($i = 1; $i <= 3; $i++) {
+        if (isset($_FILES['gambar' . $i]) && $_FILES['gambar' . $i]['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['gambar' . $i]['name'], PATHINFO_EXTENSION));
+            $newName = md5(time() . $_FILES['gambar' . $i]['name'] . $i) . '.' . $ext;
+            if (move_uploaded_file($_FILES['gambar' . $i]['tmp_name'], '../images/storage/' . $newName)) {
+                $sql .= ", gambar$i=?";
+                $params[] = $newName;
+                $types .= "s";
+            }
         }
     }
 

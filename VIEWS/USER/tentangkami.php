@@ -1,3 +1,7 @@
+<?php
+session_start();
+include '../../BACKEND/config.php';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7,20 +11,7 @@
     <link rel="stylesheet" href="../../CSS/tentangkami.css">
 </head>
 <body>
- <!-- HEADER -->
-    <header class="navbar">
-    <div class="logo-section">
-      <img src="../../images/navba.png" alt="Logo Pawerti" class="logo-header">
-      <span class="brand-name">PAWERTI</span>
-    </div>
-    <nav class="nav-menu">
-      <a href="../../USER/webTUY.html">Beranda</a>
-      <a href="../../USER/webTUY.html #event">Event</a>
-      <a href= "../../USER/tentangkami.html">Tentang Kami</a>
-      <a href="../../USER/webTUY.html #kontak">Kontak</a>
-      <a href="../../USER/loginbin.html">Login</a>
-    </nav>
-  </header>
+ <?php include '../COMPONENTS/navbar.php'; ?>
 
     <!-- SECTION: TENTANG KAMI -->
     <section class="about-section">
@@ -97,41 +88,6 @@
     </section>
 
      <!-- Footer -->
-        <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-col footer-about">
-            <div class="footer-logo">
-                <img src="../../images/Group 9.png" alt="Logo Pawerti" />
-                <h3>Pawerti</h3>
-            </div>
-            <p>
-                Melestarikan dan mempromosikan kekayaan budaya Jawa melalui berbagai
-                event dan kegiatan budaya.
-            </p>
-            </div>
-
-        <div class="footer-col footer-category">
-        <h3>Kategori</h3>
-        <ul>
-            <li>Pertunjukan Seni</li>
-            <li>Workshop Budaya</li>
-            <li>Musik Tradisional</li>
-            <li>Upacara Adat</li>
-        </ul>
-        </div>
-
-        <div class="footer-col footer-contact">
-        <h3>Kontak</h3>
-        <p>Email : inpo@portalkebudayaan@gmail.com</p>
-        <p>Telepon : 0881 0366 24551</p>
-        <p>
-            Alamat : Jl. Tanimbar No 22, Kasim, Kec. Klojen,<br>
-            Kota Malang Jawa Timur
-        </p>
-        </div>
-    </div>
-
-  <hr class="footer-line" />
-</footer>
+    <?php include '../COMPONENTS/footer.php'; ?>
 </body>
 </html>
