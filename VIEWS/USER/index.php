@@ -194,15 +194,31 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       <p>Jelajahi berbagai kategori event budaya Jawa yang tersedia</p>
     </div>
     <div class="categories-grid">
-      <?php while($cat = mysqli_fetch_assoc($query_kategori)): ?>
-        <div class="category-card">
-          <div class="category-icon">
-            <i class="fas <?php echo htmlspecialchars($cat['icon'] ?: 'fa-tag'); ?>" style="font-size: 24px; color: var(--primary);"></i>
-          </div>
-          <h3><?php echo htmlspecialchars($cat['nama_kategori']); ?></h3>
-          <p><?php echo htmlspecialchars($cat['deskripsi']); ?></p>
-        </div>
-      <?php endwhile; ?>
+
+  <div class="categories-grid">
+
+  <?php while($kategori = mysqli_fetch_assoc($query_kategori)) : ?>
+
+    <div class="category-card">
+
+      <div class="category-icon">
+        <i class="<?php echo $kategori['icon']; ?>"></i>
+      </div>
+
+      <h3>
+        <?php echo htmlspecialchars($kategori['nama_kategori']); ?>
+      </h3>
+
+      <p>
+        <?php echo htmlspecialchars($kategori['deskripsi']); ?>
+      </p>
+
+    </div>
+
+  <?php endwhile; ?>
+
+  </div>
+
     </div>
   </section>
 
@@ -214,36 +230,60 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     </div>
 
     <div class="events-grid">
-      <?php while($ev = mysqli_fetch_assoc($query_event)): ?>
-        <div class="event-card">
-          <div class="event-img">
-            <?php if($ev['gambar']): ?>
-              <img src="../../images/storage/<?php echo $ev['gambar']; ?>" alt="<?php echo htmlspecialchars($ev['judul_event']); ?>" />
-            <?php else: ?>
-              <img src="../../images/reogponorogo.png" alt="Default Event Image" />
-            <?php endif; ?>
-            <span class="event-badge"><?php echo htmlspecialchars($ev['status']); ?></span>
-          </div>
-          <div class="event-info">
-            <h3><?php echo htmlspecialchars($ev['judul_event']); ?></h3>
-            <p><?php echo htmlspecialchars(substr($ev['deskripsi'], 0, 150)) . '...'; ?></p>
-            <div class="event-meta">
-              <span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <?php echo date('d M Y', strtotime($ev['tanggal_event'])); ?>
-              </span>
-              <span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <?php echo htmlspecialchars($ev['lokasi']); ?>
-              </span>
-            </div>
-          </div>
+
+    <?php while($event = mysqli_fetch_assoc($query_event)) : ?>
+
+      <div class="event-card">
+
+        <div class="event-img">
+
+          <img 
+            src="../../images/storage/<?php echo $event['gambar']; ?>" 
+            alt="<?php echo htmlspecialchars($event['judul_event']); ?>"
+          >
+
+          <span class="event-badge">
+            <?php echo $event['status']; ?>
+          </span>
+
         </div>
-      <?php endwhile; ?>
+
+        <div class="event-info">
+
+          <h3>
+            <?php echo htmlspecialchars($event['judul_event']); ?>
+          </h3>
+
+          <p>
+            <?php echo htmlspecialchars($event['deskripsi']); ?>
+          </p>
+
+          <div class="event-meta">
+
+            <span>
+              📅
+              <?php echo $event['tanggal_event']; ?>
+            </span>
+
+            <span>
+              📍
+              <?php echo htmlspecialchars($event['lokasi']); ?>
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    <?php endwhile; ?>
+
+    </div>
+
     </div>
 
     <div class="events-more">
-      <a href="events.html" class="btn-more" style="display:inline-block;text-decoration:none;">Lihat Semua Event</a>
+      <a href="../../VIEWS/USER/events.html" class="btn-more" style="display:inline-block;text-decoration:none;">Lihat Semua Event</a>
     </div>
   </section>
 
