@@ -112,7 +112,83 @@ if ($action === 'list') {
         echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui event.']);
     }
 
-} elseif ($action === 'delete' && isset($_GET['id'])) {
+} 
+
+elseif ($action === 'generate_ai' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $judul = $data['judul'] ?? '';
+
+    if(empty($judul)){
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Judul kosong'
+        ]);
+        exit;
+    }
+
+    $apiKey = "API_KEY_BARU_KAMU";
+
+    $prompt = "Buatkan deskripsi event yang menarik dan profesional berdasarkan judul berikut: $judul";
+
+    $postData = [
+        "model" => "openai/gpt-3.5-turbo",
+        "messages" => [
+            [
+                "role" => "user",
+                "content" => $prompt
+            ]
+        ]
+    ];
+
+    $ch = curl_init("https://openrouter.ai/api/v1/chat/completions");
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer " . $apiKey,
+        "Content-Type: application/json",
+        "HTTP-Referer: http://localhost",
+        "X-Title: Pawerti"
+    ]);
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+
+    $response = curl_exec($ch);
+
+    if(curl_errno($ch)){
+        echo json_encode([
+            'status' => 'error',
+            'message' => curl_error($ch)
+        ]);
+        exit;
+    }
+
+    curl_close($ch);
+
+    $result = json_decode($response, true);
+
+    if(isset($result['choices'][0]['message']['content'])){
+
+        $text = $result['choices'][0]['message']['content'];
+
+        echo json_encode([
+            'status' => 'success',
+            'result' => $text
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => 'error',
+            'response' => $result
+        ]);
+    }
+}
+
+elseif ($action === 'delete' && isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $stmt = $conn->prepare("DELETE FROM events WHERE id = ?");
     $stmt->bind_param("i", $id);

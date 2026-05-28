@@ -12,6 +12,7 @@ include '../../BACKEND/config.php';
 </head>
 <body>
  <?php include '../COMPONENTS/navbar.php'; ?>
+ 
 
     <!-- SECTION: TENTANG KAMI -->
     <section class="about-section">
@@ -29,7 +30,7 @@ include '../../BACKEND/config.php';
             </p>
         </div>
         <div class="about-img">
-            <img src="../../images/teamtententang.png" alt="Tim Pawerti">
+            <img src="./../../images/teamtentang.png" alt="Tim Pawerti">
         </div>
     </section>
 
@@ -54,38 +55,6 @@ include '../../BACKEND/config.php';
         </div>
     </section>
 
-    <!-- PARTISIPASI -->
-    <section class="partisipasi" id="partisipasi">
-        <h2>Partisipasi</h2>
-        <div class="cards">
-            <div class="card">
-                <div class="icon">💃</div>
-                <h3>Pelatihan Tari</h3>
-                <p>Ikuti pelatihan menari tradisional dari para seniman Jawa terbaik.</p>
-                <button>Gabung Pelatihan
-                  <a href="loginbin.html"></a>
-                </button>
-            </div>
-            <div class="card">
-                <div class="icon">🎵</div>
-                <h3>Kursus Musik</h3>
-                <p>Pelajari musik tradisional Jawa seperti gamelan dan tembang.</p>
-                <button>Mulai Belajar</button>
-            </div>
-            <div class="card">
-                <div class="icon">🎨</div>
-                <h3>Workshop Seni</h3>
-                <p>Ikuti workshop seni rupa dan kerajinan khas budaya Jawa.</p>
-                <button>Daftar Workshop</button>
-            </div>
-            <div class="card">
-                <div class="icon">📖</div>
-                <h3>Dokumentasi Budaya</h3>
-                <p>Bagikan dokumentasi dan tulisan mengenai budaya Jawa.</p>
-                <button>Kontribusi</button>
-            </div>
-        </div>
-    </section>
 
      <!-- Footer -->
     <?php include '../COMPONENTS/footer.php'; ?>

@@ -13,7 +13,9 @@ include '../../BACKEND/config.php';
 </head>
 
 <body>
+    <!-- Navbar -->
     <?php include '../COMPONENTS/navbar.php'; ?>
+    <?php include '../COMPONENTS/user_modals.php'; ?>
 
         <!-- Deskripsi Event -->
     <section class="deskripsi-event" id="deskripsi-event">

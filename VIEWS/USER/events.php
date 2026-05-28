@@ -355,6 +355,38 @@ if (!$featured) {
       color: #fff;
       border-color: var(--primary);
     }
+
+    .event-link{
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.event-item{
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.event-item:hover{
+    transform: translateY(-5px);
+}
+
+.sold-out{
+    background: #777 !important;
+}
+
+.empty-event{
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 100px;
+    color: #777;
+}
+
+.empty-event i{
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
   </style>
 </head>
 <body>
@@ -428,67 +460,125 @@ if (!$featured) {
   </div>
 
   <main class="event-container" id="eventList">
-    <?php if (mysqli_num_rows($query_events) > 0): ?>
-      <?php while ($ev = mysqli_fetch_assoc($query_events)): ?>
-        <div class="modern-card event-item" data-category="<?php echo $ev['kategori_id']; ?>" data-title="<?php echo strtolower(htmlspecialchars($ev['judul_event'])); ?>">
-          <div class="card-slider" id="slider-<?php echo $ev['id']; ?>">
-            <img src="../../images/storage/<?php echo $ev['gambar1'] ?: 'default.png'; ?>" class="slider-img" alt="">
-            <?php if ($ev['gambar2']): ?>
-              <img src="../../images/storage/<?php echo $ev['gambar2']; ?>" class="slider-img" alt="">
-            <?php endif; ?>
-            <?php if ($ev['gambar3']): ?>
-              <img src="../../images/storage/<?php echo $ev['gambar3']; ?>" class="slider-img" alt="">
-            <?php endif; ?>
-          </div>
 
-          <div class="slider-dots">
-            <div class="dot active"></div>
-            <?php if ($ev['gambar2']): ?><div class="dot"></div><?php endif; ?>
-            <?php if ($ev['gambar3']): ?><div class="dot"></div><?php endif; ?>
-          </div>
+<?php if (mysqli_num_rows($query_events) > 0): ?>
+    
+    <?php while ($ev = mysqli_fetch_assoc($query_events)): ?>
 
-          <div class="card-overlay">
-            <h2 class="card-title"><?php echo htmlspecialchars($ev['judul_event']); ?></h2>
-            <div class="card-location">
-              <i class="fas fa-map-marker-alt"></i>
-              <?php echo htmlspecialchars($ev['lokasi']); ?>
+    <a href="detail.php?id=<?php echo $ev['id']; ?>" class="event-link">
+
+        <div class="modern-card event-item"
+             data-category="<?php echo $ev['kategori_id']; ?>"
+             data-title="<?php echo strtolower(htmlspecialchars($ev['judul_event'])); ?>">
+
+            <!-- SLIDER -->
+            <div class="card-slider" id="slider-<?php echo $ev['id']; ?>">
+
+                <img src="../../images/storage/<?php echo $ev['gambar1'] ?: 'default.png'; ?>"
+                     class="slider-img"
+                     alt="">
+
+                <?php if ($ev['gambar2']): ?>
+                    <img src="../../images/storage/<?php echo $ev['gambar2']; ?>"
+                         class="slider-img"
+                         alt="">
+                <?php endif; ?>
+
+                <?php if ($ev['gambar3']): ?>
+                    <img src="../../images/storage/<?php echo $ev['gambar3']; ?>"
+                         class="slider-img"
+                         alt="">
+                <?php endif; ?>
+
             </div>
 
-            <div class="card-info-row">
-              <div class="info-item">
-                <i class="fas fa-chair"></i>
-                <span>Total: <?php echo $ev['total_kursi']; ?></span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-user-clock"></i>
-                <span>Sisa: <?php echo $ev['sisa_kursi']; ?></span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-calendar-day"></i>
-                <span><?php echo date('d M', strtotime($ev['tanggal_event'])); ?></span>
-              </div>
+            <!-- DOT -->
+            <div class="slider-dots">
+
+                <div class="dot active"></div>
+
+                <?php if ($ev['gambar2']): ?>
+                    <div class="dot"></div>
+                <?php endif; ?>
+
+                <?php if ($ev['gambar3']): ?>
+                    <div class="dot"></div>
+                <?php endif; ?>
+
             </div>
 
-            <div class="card-footer">
-              <div class="card-price">
-                <?php echo ($ev['harga'] > 0) ? 'Rp ' . number_format($ev['harga'], 0, ',', '.') : 'Gratis'; ?>
-              </div>
-              <?php if ($ev['sisa_kursi'] > 0): ?>
-                <button class="btn-reserve" onclick="openBookingModal(<?php echo htmlspecialchars(json_encode($ev)); ?>)">Pesan Sekarang</button>
-              <?php else: ?>
-                <button class="btn-reserve" style="background:#777; cursor:not-allowed;" disabled>Tiket Habis</button>
-              <?php endif; ?>
+            <!-- CONTENT -->
+            <div class="card-overlay">
+
+                <h2 class="card-title">
+                    <?php echo htmlspecialchars($ev['judul_event']); ?>
+                </h2>
+
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <?php echo htmlspecialchars($ev['lokasi']); ?>
+                </div>
+
+                <div class="card-info-row">
+
+                    <div class="info-item">
+                        <i class="fas fa-chair"></i>
+                        <span>Total: <?php echo $ev['total_kursi']; ?></span>
+                    </div>
+
+                    <div class="info-item">
+                        <i class="fas fa-user-clock"></i>
+                        <span>Sisa: <?php echo $ev['sisa_kursi']; ?></span>
+                    </div>
+
+                    <div class="info-item">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>
+                            <?php echo date('d M', strtotime($ev['tanggal_event'])); ?>
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+
+                    <div class="card-price">
+                        <?php
+                        echo ($ev['harga'] > 0)
+                            ? 'Rp ' . number_format($ev['harga'], 0, ',', '.')
+                            : 'Gratis';
+                        ?>
+                    </div>
+
+                    <?php if ($ev['sisa_kursi'] > 0): ?>
+                        <div class="btn-reserve">
+                            Lihat Detail
+                        </div>
+                    <?php else: ?>
+                        <div class="btn-reserve sold-out">
+                            Tiket Habis
+                        </div>
+                    <?php endif; ?>
+
+                </div>
+
             </div>
-          </div>
         </div>
-      <?php endwhile; ?>
-    <?php else: ?>
-      <div style="grid-column: 1/-1; text-align: center; padding: 100px; color: #777;">
-        <i class="fas fa-calendar-times" style="font-size: 50px; margin-bottom: 20px;"></i>
+
+    </a>
+
+    <?php endwhile; ?>
+
+<?php else: ?>
+
+    <div class="empty-event">
+        <i class="fas fa-calendar-times"></i>
         <p>Tidak ada event yang ditemukan.</p>
-      </div>
-    <?php endif; ?>
-  </main>
+    </div>
+
+<?php endif; ?>
+
+</main>
 
   <!-- Booking Modal -->
   <div class="booking-modal" id="bookingModal">

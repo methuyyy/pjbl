@@ -983,7 +983,27 @@ textarea.form-control { resize: vertical; min-height: 90px; }
             <input type="file" name="gambar3" class="form-control" accept="image/*">
           </div>
         </div>
-        <div class="form-group"><label class="form-label">Deskripsi</label><textarea name="deskripsi" id="event-desc" class="form-control" rows="3"></textarea></div>
+        <div class="form-group">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+
+            <label class="form-label" style="margin:0;">
+              Deskripsi
+            </label>
+
+            <button type="button"
+                    id="generate-ai-btn"
+                    class="btn btn-outline">
+              ✨ Generate Text
+            </button>
+          </div>
+
+          <textarea
+              name="deskripsi"
+              id="event-desc"
+              class="form-control"
+              rows="5"></textarea>
+        </div>
         <div class="modal-actions">
           <button type="button" class="btn btn-outline" onclick="closeEventModal()">Batal</button>
           <button type="submit" class="btn btn-primary">Simpan</button>
@@ -1986,6 +2006,70 @@ textarea.form-control { resize: vertical; min-height: 90px; }
       btn.style.background = '';
     }, 2000);
   }
+</script>
+
+<script>
+
+document.getElementById("generate-ai-btn")
+.addEventListener("click", async function(){
+
+    const judul =
+        document.getElementById("event-judul").value;
+
+    const lokasi =
+        document.getElementById("event-lokasi").value;
+
+    const btn =
+        document.getElementById("generate-ai-btn");
+
+    if(!judul){
+        alert("Isi judul event dulu");
+        return;
+    }
+
+    btn.innerHTML = "Generating...";
+    btn.disabled = true;
+
+    try{
+
+        const response = await fetch("./../../BACKEND/admin_events.php?action=generate_ai", {
+
+            method: "POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                judul,
+                lokasi
+            })
+
+        });
+
+        // DEBUG RESPONSE
+        const text = await response.text();
+
+        console.log(text);
+
+        const data = JSON.parse(text);
+
+        document.getElementById("event-desc").value =
+            data.result;
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Gagal generate AI");
+
+    }
+
+    btn.innerHTML = "✨ Generate Text";
+    btn.disabled = false;
+
+});
+
 </script>
 </body>
 </html>
