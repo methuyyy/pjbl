@@ -637,6 +637,24 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   cursor: pointer; color: var(--text-muted);
   font-size: 13px;
 }
+
+.modal-box::-webkit-scrollbar{
+  width:8px;
+}
+
+.modal-box::-webkit-scrollbar-track{
+  background:#f1f1f1;
+  border-radius:10px;
+}
+
+.modal-box::-webkit-scrollbar-thumb{
+  background:#c1c1c1;
+  border-radius:10px;
+}
+
+.modal-box::-webkit-scrollbar-thumb:hover{
+  background:#999;
+}
 </style>
 </head>
 <body>
@@ -936,8 +954,29 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   </div>
 
   <!-- Modal Event -->
-  <div id="event-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
-    <div class="modal-box" style="max-width:600px; text-align:left;">
+  <div id="event-modal"
+     style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.5);
+        z-index:1000;
+        align-items:center;
+        justify-content:center;
+        overflow-y:auto;
+        padding:20px;
+     ">
+    <div class="modal-box"
+     style="
+        max-width:900px;
+        width:100%;
+        max-height:90vh;
+        overflow-y:auto;
+        text-align:left;
+        background:#fff;
+        border-radius:20px;
+        padding:25px;
+     ">
       <div class="modal-title" id="event-modal-title">Tambah Event</div>
       <form id="event-form" enctype="multipart/form-data">
         <input type="hidden" name="id" id="event-id">
@@ -1004,6 +1043,178 @@ textarea.form-control { resize: vertical; min-height: 90px; }
               class="form-control"
               rows="5"></textarea>
         </div>
+
+                <!-- ========================= -->
+        <!-- BENEFIT EVENT -->
+        <!-- ========================= -->
+
+        <div class="form-section">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+
+            <label class="form-label" style="margin:0;">
+              Benefit Event
+            </label>
+
+            <button type="button"
+                    class="btn btn-outline"
+                    onclick="addBenefit()">
+              + Benefit
+            </button>
+
+          </div>
+
+          <div id="benefit-wrapper"></div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- RUNDOWN EVENT -->
+        <!-- ========================= -->
+
+        <div class="form-section">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+
+            <label class="form-label" style="margin:0;">
+              Rundown Event
+            </label>
+
+            <button type="button"
+                    class="btn btn-outline"
+                    onclick="addRundown()">
+              + Rundown
+            </button>
+
+          </div>
+
+          <div id="rundown-wrapper"></div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- NARASUMBER -->
+        <!-- ========================= -->
+
+        <div class="form-section">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+
+            <label class="form-label" style="margin:0;">
+              Narasumber
+            </label>
+
+            <button type="button"
+                    class="btn btn-outline"
+                    onclick="addSpeaker()">
+              + Narasumber
+            </button>
+
+          </div>
+
+          <div id="speaker-wrapper"></div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- FAQ -->
+        <!-- ========================= -->
+
+        <div class="form-section">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+
+            <label class="form-label" style="margin:0;">
+              FAQ Event
+            </label>
+
+            <button type="button"
+                    class="btn btn-outline"
+                    onclick="addFaq()">
+              + FAQ
+            </button>
+
+          </div>
+
+          <div id="faq-wrapper"></div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- TERMS -->
+        <!-- ========================= -->
+
+        <div class="form-section">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+
+            <label class="form-label" style="margin:0;">
+              Syarat & Ketentuan
+            </label>
+
+            <button type="button"
+                    class="btn btn-outline"
+                    onclick="addTerm()">
+              + Syarat
+            </button>
+
+          </div>
+
+          <div id="term-wrapper"></div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- LOKASI DETAIL -->
+        <!-- ========================= -->
+
+        <div class="form-section">
+
+          <label class="form-label">
+            Nama Tempat
+          </label>
+
+          <input type="text"
+                name="location_name"
+                class="form-control">
+
+          <br>
+
+          <label class="form-label">
+            Alamat Lengkap
+          </label>
+
+          <textarea name="location_address"
+                    class="form-control"
+                    rows="3"></textarea>
+
+          <br>
+
+          <label class="form-label">
+            Google Maps
+          </label>
+
+          <input type="text"
+                name="location_maps"
+                class="form-control">
+
+          <br>
+
+          <label class="form-label">
+            Catatan Lokasi
+          </label>
+
+          <textarea name="location_note"
+                    class="form-control"
+                    rows="3"></textarea>
+
+        </div>
+
         <div class="modal-actions">
           <button type="button" class="btn btn-outline" onclick="closeEventModal()">Batal</button>
           <button type="submit" class="btn btn-primary">Simpan</button>
@@ -1011,6 +1222,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
       </form>
     </div>
   </div>
+
+  
 
   <!-- ═══ PESAN MASUK ═══ -->
   <div class="content" id="page-pesan" style="display:none">
@@ -2069,6 +2282,259 @@ document.getElementById("generate-ai-btn")
     btn.disabled = false;
 
 });
+
+</script>
+
+<script>
+
+/* =========================
+   BENEFIT
+========================= */
+
+function addBenefit(value = '') {
+
+    const wrapper = document.getElementById('benefit-wrapper');
+
+    wrapper.innerHTML += `
+        <div class="dynamic-item" style="
+            border:1px solid #ddd;
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:12px;
+            position:relative;
+        ">
+
+            <input type="text"
+                   name="benefit[]"
+                   class="form-control"
+                   placeholder="Contoh: E-Sertifikat"
+                   value="${value}">
+
+            <button type="button"
+                    onclick="this.parentElement.remove()"
+                    style="
+                        position:absolute;
+                        top:10px;
+                        right:10px;
+                        background:red;
+                        color:white;
+                        border:none;
+                        width:30px;
+                        height:30px;
+                        border-radius:50%;
+                        cursor:pointer;
+                    ">
+                ×
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   RUNDOWN
+========================= */
+
+function addRundown(time = '', activity = '') {
+
+    const wrapper = document.getElementById('rundown-wrapper');
+
+    wrapper.innerHTML += `
+        <div class="dynamic-item" style="
+            border:1px solid #ddd;
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:12px;
+            position:relative;
+        ">
+
+            <div class="grid-2">
+
+                <input type="time"
+                       name="rundown_time[]"
+                       class="form-control"
+                       value="${time}">
+
+                <input type="text"
+                       name="rundown_activity[]"
+                       class="form-control"
+                       placeholder="Kegiatan"
+                       value="${activity}">
+
+            </div>
+
+            <button type="button"
+                    onclick="this.parentElement.remove()"
+                    style="
+                        position:absolute;
+                        top:10px;
+                        right:10px;
+                        background:red;
+                        color:white;
+                        border:none;
+                        width:30px;
+                        height:30px;
+                        border-radius:50%;
+                        cursor:pointer;
+                    ">
+                ×
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   SPEAKER
+========================= */
+
+function addSpeaker(name = '', job = '') {
+
+    const wrapper = document.getElementById('speaker-wrapper');
+
+    wrapper.innerHTML += `
+        <div class="dynamic-item" style="
+            border:1px solid #ddd;
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:12px;
+            position:relative;
+        ">
+
+            <div class="grid-2">
+
+                <input type="text"
+                       name="speaker_name[]"
+                       class="form-control"
+                       placeholder="Nama Narasumber"
+                       value="${name}">
+
+                <input type="text"
+                       name="speaker_job[]"
+                       class="form-control"
+                       placeholder="Profesi / Jabatan"
+                       value="${job}">
+
+            </div>
+
+            <button type="button"
+                    onclick="this.parentElement.remove()"
+                    style="
+                        position:absolute;
+                        top:10px;
+                        right:10px;
+                        background:red;
+                        color:white;
+                        border:none;
+                        width:30px;
+                        height:30px;
+                        border-radius:50%;
+                        cursor:pointer;
+                    ">
+                ×
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   FAQ
+========================= */
+
+function addFaq(question = '', answer = '') {
+
+    const wrapper = document.getElementById('faq-wrapper');
+
+    wrapper.innerHTML += `
+        <div class="dynamic-item" style="
+            border:1px solid #ddd;
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:12px;
+            position:relative;
+        ">
+
+            <input type="text"
+                   name="faq_question[]"
+                   class="form-control"
+                   placeholder="Pertanyaan"
+                   value="${question}">
+
+            <br>
+
+            <textarea name="faq_answer[]"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Jawaban">${answer}</textarea>
+
+            <button type="button"
+                    onclick="this.parentElement.remove()"
+                    style="
+                        position:absolute;
+                        top:10px;
+                        right:10px;
+                        background:red;
+                        color:white;
+                        border:none;
+                        width:30px;
+                        height:30px;
+                        border-radius:50%;
+                        cursor:pointer;
+                    ">
+                ×
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   TERMS
+========================= */
+
+function addTerm(value = '') {
+
+    const wrapper = document.getElementById('term-wrapper');
+
+    wrapper.innerHTML += `
+        <div class="dynamic-item" style="
+            border:1px solid #ddd;
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:12px;
+            position:relative;
+        ">
+
+            <textarea name="terms[]"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Masukkan syarat & ketentuan">${value}</textarea>
+
+            <button type="button"
+                    onclick="this.parentElement.remove()"
+                    style="
+                        position:absolute;
+                        top:10px;
+                        right:10px;
+                        background:red;
+                        color:white;
+                        border:none;
+                        width:30px;
+                        height:30px;
+                        border-radius:50%;
+                        cursor:pointer;
+                    ">
+                ×
+            </button>
+
+        </div>
+    `;
+}
 
 </script>
 </body>

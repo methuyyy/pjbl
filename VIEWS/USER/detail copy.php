@@ -16,8 +16,6 @@ $query = mysqli_query($conn, "
 
 $event = mysqli_fetch_assoc($query);
 
-$tanggal_event = date('d F Y', strtotime($event['tanggal_event']));
-
 if (!$event) {
     die("Event tidak ditemukan");
 }
@@ -28,7 +26,7 @@ if (!$event) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= htmlspecialchars($event['judul_event']) ?> - Pawarti</title>
+<title>Workshop Batik Tulis – Pawarti</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <!-- Google Material Icons Library -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -511,12 +509,8 @@ if (!$event) {
   <div class="hero">
     <div class="hero-meta">
       <div class="badge-unggulan" style="display: inline-flex; align-items: center; gap: 4px;"><i class="material-icons" style="font-size: 0.9rem;">star</i> Unggulan</div>
-      <h1 class="hero-title">
-          <?= nl2br(htmlspecialchars($event['judul_event'])) ?>
-      </h1>
-      <p class="hero-tagline">
-          <?= htmlspecialchars($event['featured_sub'] ?: 'Event budaya terbaik pilihan Pawarti') ?>
-      </p>
+      <h1 class="hero-title">Workshop Batik Tulis<br>Bersama Maestro</h1>
+      <p class="hero-tagline">Pelajari seni membatik langsung dari pengrajin batik Solo berumur 40 tahun pengalaman</p>
 
       <div class="organizer-row">
         <div class="organizer-avatar">PW</div>
@@ -531,7 +525,7 @@ if (!$event) {
           <div class="stat-icon"><i class="material-icons">calendar_today</i></div>
           <div>
             <span class="stat-label">Tanggal</span>
-            <span class="stat-value"><?= $tanggal_event ?></span>
+            <span class="stat-value">10 Juli 2026</span>
           </div>
         </div>
         <div class="stat-item">
@@ -545,18 +539,14 @@ if (!$event) {
           <div class="stat-icon"><i class="material-icons">place</i></div>
           <div>
             <span class="stat-label">Lokasi</span>
-            <span class="stat-value">
-                <?= htmlspecialchars($event['lokasi']) ?>
-            </span>
+            <span class="stat-value">Solo, Jawa Tengah</span>
           </div>
         </div>
         <div class="stat-item">
           <div class="stat-icon"><i class="material-icons">group</i></div>
           <div>
             <span class="stat-label">Kapasitas</span>
-            <span class="stat-value">
-                <?= $event['total_kursi'] ?> Peserta
-            </span>
+            <span class="stat-value">100 Peserta</span>
           </div>
         </div>
       </div>
@@ -570,32 +560,12 @@ if (!$event) {
     </div>
 
     <!-- Hero image -->
-      <div class="hero-image-wrap">
-
-      <?php if (!empty($event['gambar1'])): ?>
-
-          <img 
-              src="../../images/storage/<?= htmlspecialchars($event['gambar1']) ?>" 
-              alt="<?= htmlspecialchars($event['judul_event']) ?>"
-              style="
-                  width:100%;
-                  height:100%;
-                  object-fit:cover;
-                  border-radius:24px;
-              "
-          >
-
-      <?php else: ?>
-
-          <div class="hero-img-placeholder">
-              <span style="opacity:0.5; display:flex; align-items:center;">
-                  <i class="material-icons" style="font-size:4rem;">image</i>
-              </span>
-          </div>
-
-      <?php endif; ?>
-
+    <div class="hero-image-wrap">
+      <div class="hero-img-placeholder">
+        <span style="opacity:0.5; display: flex; align-items: center;"><i class="material-icons" style="font-size: 4rem;">palette</i></span>
       </div>
+      <!-- Ganti dengan: <img src="foto-event.jpg" alt="Workshop Batik"> -->
+    </div>
   </div>
 </div>
 
@@ -608,9 +578,11 @@ if (!$event) {
     <!-- DESKRIPSI -->
     <section class="content-section">
       <h2 class="section-title">Tentang Event Ini</h2>
-        <div class="prose">
-            <?= nl2br(htmlspecialchars($event['deskripsi'])) ?>
-        </div>
+      <div class="prose">
+        <p>Workshop Batik Tulis adalah program intensif satu hari yang dirancang untuk memperkenalkan peserta pada seni membatik tradisional Jawa secara mendalam. Dipandu langsung oleh <strong>Pak Djoko Santoso</strong>, seorang maestro batik asal Laweyan, Solo, dengan pengalaman lebih dari 40 tahun.</p>
+        <p>Batik tulis adalah salah satu warisan budaya Indonesia yang telah diakui UNESCO sejak tahun 2009. Dalam workshop ini, peserta tidak sekadar menonton — melainkan benar-benar menciptakan karya batik mereka sendiri dari nol, mulai dari menggambar pola hingga proses pelorodan.</p>
+        <p>Workshop ini terbuka untuk semua kalangan, dari pemula hingga yang sudah pernah mencoba membatik. Tidak diperlukan keahlian seni khusus — hanya semangat belajar dan kecintaan pada budaya Nusantara.</p>
+      </div>
     </section>
 
     <!-- YANG AKAN KAMU DAPATKAN -->
@@ -806,9 +778,7 @@ if (!$event) {
   <!-- RIGHT STICKY CARD -->
   <aside>
     <div class="book-card">
-      <div class="price-main">
-          Rp <?= number_format($event['harga'], 0, ',', '.') ?>
-      </div>
+      <div class="price-main">Rp 150.000</div>
       <div class="price-sub">per orang · termasuk makan siang & perlengkapan</div>
 
       <div class="seat-bar-wrap">
@@ -819,9 +789,7 @@ if (!$event) {
         <div class="seat-bar-track">
           <div class="seat-bar-fill"></div>
         </div>
-        <div class="seat-count">
-          Tersisa <?= $event['sisa_kursi'] ?> kursi dari <?= $event['total_kursi'] ?>
-      </div>
+        <div class="seat-count">Tersisa 2 kursi dari 100</div>
       </div>
 
       <div class="qty-row">
@@ -916,10 +884,10 @@ if (!$event) {
 
 <script>
   let qty = 1;
-  const basePrice = <?= $event['harga'] ?>;
+  const basePrice = 150000;
 
   function changeQty(delta) {
-    qty = Math.max(1, Math.min(<?= $event['sisa_kursi'] ?>, qty + delta));
+    qty = Math.max(1, Math.min(2, qty + delta)); // max 2 (sisa kursi)
     document.getElementById('qty').textContent = qty;
     document.getElementById('total-price').textContent = 'Rp ' + (qty * basePrice).toLocaleString('id-ID');
   }
