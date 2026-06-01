@@ -37,14 +37,45 @@ if ($action === 'list') {
     $phone = $_POST['phone'];
     $city = $_POST['city'];
     $new_password = $_POST['new_password'] ?? '';
+    $profile_pic = null;
 
-    if (!empty($new_password)) {
-        // Jika password diisi, update dengan password baru (hash)
+    // Handle file upload for profile picture
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['profile_pic']['tmp_name'];
+        $fileName = $_FILES['profile_pic']['name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        // Validasi extension
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($fileExtension, $allowedExtensions)) {
+            // Generate unique filename
+            $newFileName = uniqid() . '_' . time() . '.' . $fileExtension;
+            $uploadDir = '../uploads/user/';
+            
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $destPath = $uploadDir . $newFileName;
+            
+            if (move_uploaded_file($fileTmpPath, $destPath)) {
+                $profile_pic = $newFileName;
+            }
+        }
+    }
+
+    if (!empty($new_password) && $profile_pic) {
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, email=?, phone=?, city=?, password=?, profile_pic=? WHERE id=?");
+        $stmt->bind_param("sssssssi", $first_name, $last_name, $email, $phone, $city, $hashed_password, $profile_pic, $id);
+    } elseif (!empty($new_password)) {
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
         $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, email=?, phone=?, city=?, password=? WHERE id=?");
         $stmt->bind_param("ssssssi", $first_name, $last_name, $email, $phone, $city, $hashed_password, $id);
+    } elseif ($profile_pic) {
+        $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, email=?, phone=?, city=?, profile_pic=? WHERE id=?");
+        $stmt->bind_param("ssssssi", $first_name, $last_name, $email, $phone, $city, $profile_pic, $id);
     } else {
-        // Jika password kosong, jangan update kolom password
         $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=?, email=?, phone=?, city=? WHERE id=?");
         $stmt->bind_param("sssssi", $first_name, $last_name, $email, $phone, $city, $id);
     }

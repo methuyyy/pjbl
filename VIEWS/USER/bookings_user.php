@@ -184,7 +184,13 @@ $query_bookings = mysqli_query($conn, "
         <?php if (mysqli_num_rows($query_bookings) > 0): ?>
             <?php while ($book = mysqli_fetch_assoc($query_bookings)): ?>
                 <div class="booking-card">
-                    <img src="../../images/storage/<?php echo $book['gambar1'] ?: 'default.png'; ?>" class="booking-img" alt="">
+                    <?php
+                    $imgPath = $book['gambar1'] ?: '';
+                    if ($imgPath && !str_starts_with($imgPath, 'uploads/') && !str_starts_with($imgPath, 'images/')) {
+                        $imgPath = 'images/storage/' . $imgPath;
+                    }
+                    ?>
+                    <img src="../../<?php echo $imgPath ?: 'images/storage/default.png'; ?>" class="booking-img" alt="">
                     <div class="booking-details">
                         <div class="booking-header">
                             <div>

@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg');
         if (in_array($fileExtension, $allowedfileExtensions)) {
             // Directory path
-            $uploadFileDir = '../images/storage/';
+            $uploadFileDir = '../uploads/user/';
             
             // Create directory if not exists
             if (!is_dir($uploadFileDir)) {

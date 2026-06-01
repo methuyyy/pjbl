@@ -1,0 +1,41 @@
+/* Admin Master Styles */
+:root {
+  --primary: #8B2500;
+  --primary-light: #C4401A;
+  --primary-pale: #FFF5F2;
+  --accent: #D4A017;
+  --accent-light: #F7D97A;
+  --sidebar-bg: #1C0D00;
+  --sidebar-text: #F5DEB3;
+  --sidebar-muted: #9B7B5A;
+  --sidebar-active: rgba(212, 160, 23, 0.18);
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --bg: #F9F5F0;
+  --card: #FFFFFF;
+  --text: #2C1500;
+  --text-muted: #7A5C3A;
+  --border: #E8DDD0;
+  --success: #2E7D32;
+  --warning: #F57C00;
+  --danger: #C62828;
+  --info: #1565C0;
+  --sidebar-w: 260px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 13.5px;
+}

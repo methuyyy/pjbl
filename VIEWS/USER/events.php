@@ -9,7 +9,7 @@ $is_logged_in = isset($_SESSION['user_id']);
 $query_kategori = mysqli_query($conn, "SELECT * FROM kategori");
 $categories = [];
 while ($row = mysqli_fetch_assoc($query_kategori)) {
-    $categories[] = $row;
+  $categories[] = $row;
 }
 
 // Fetch events
@@ -21,12 +21,13 @@ $featured = mysqli_fetch_assoc($query_featured);
 
 // If no featured event, pick the latest one
 if (!$featured) {
-    $query_latest = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 1");
-    $featured = mysqli_fetch_assoc($query_latest);
+  $query_latest = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 1");
+  $featured = mysqli_fetch_assoc($query_latest);
 }
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +53,7 @@ if (!$featured) {
       aspect-ratio: 3/4;
       background: #000;
       color: #fff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       transition: transform 0.3s ease;
     }
 
@@ -77,7 +78,7 @@ if (!$featured) {
     .card-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.1) 100%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -96,7 +97,7 @@ if (!$featured) {
     .dot {
       width: 6px;
       height: 6px;
-      background: rgba(255,255,255,0.4);
+      background: rgba(255, 255, 255, 0.4);
       border-radius: 50%;
       transition: all 0.3s;
     }
@@ -115,7 +116,7 @@ if (!$featured) {
 
     .card-location {
       font-size: 0.9rem;
-      color: rgba(255,255,255,0.8);
+      color: rgba(255, 255, 255, 0.8);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -126,8 +127,8 @@ if (!$featured) {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.15);
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       padding: 12px 0;
       margin-bottom: 24px;
     }
@@ -151,7 +152,7 @@ if (!$featured) {
     }
 
     .card-price {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       padding: 10px 20px;
       border-radius: 50px;
       font-weight: 600;
@@ -181,15 +182,17 @@ if (!$featured) {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.8);
       z-index: 2000;
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(5px);
     }
+
     .booking-modal.show {
       display: flex;
     }
+
     .modal-content {
       background: #fff;
       width: 100%;
@@ -199,6 +202,7 @@ if (!$featured) {
       color: #333;
       position: relative;
     }
+
     .modal-close {
       position: absolute;
       top: 20px;
@@ -207,36 +211,43 @@ if (!$featured) {
       font-size: 1.2rem;
       color: #999;
     }
+
     .modal-title {
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 20px;
       color: #000;
     }
+
     .booking-info {
       background: #f9f9f9;
       padding: 15px;
       border-radius: 12px;
       margin-bottom: 20px;
     }
+
     .booking-info-item {
       display: flex;
       justify-content: space-between;
       margin-bottom: 8px;
       font-size: 0.9rem;
     }
+
     .booking-info-item:last-child {
       margin-bottom: 0;
     }
+
     .booking-form .form-group {
       margin-bottom: 20px;
     }
+
     .booking-form label {
       display: block;
       font-size: 0.9rem;
       font-weight: 600;
       margin-bottom: 8px;
     }
+
     .booking-form input {
       width: 100%;
       padding: 12px 16px;
@@ -246,9 +257,11 @@ if (!$featured) {
       outline: none;
       transition: border-color 0.3s;
     }
+
     .booking-form input:focus {
       border-color: #6b2737;
     }
+
     .total-price-display {
       font-size: 1.2rem;
       font-weight: 700;
@@ -256,6 +269,7 @@ if (!$featured) {
       margin: 20px 0;
       text-align: right;
     }
+
     .btn-confirm-booking {
       width: 100%;
       padding: 16px;
@@ -268,6 +282,7 @@ if (!$featured) {
       cursor: pointer;
       transition: background 0.3s;
     }
+
     .btn-confirm-booking:hover {
       background: #4a1a24;
     }
@@ -277,15 +292,17 @@ if (!$featured) {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.8);
       z-index: 2100;
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(5px);
     }
+
     .success-modal.show {
       display: flex;
     }
+
     .success-content {
       background: #fff;
       width: 100%;
@@ -294,6 +311,7 @@ if (!$featured) {
       padding: 40px;
       text-align: center;
     }
+
     .success-icon {
       width: 80px;
       height: 80px;
@@ -306,6 +324,7 @@ if (!$featured) {
       font-size: 40px;
       margin: 0 auto 20px;
     }
+
     .btn-done {
       margin-top: 25px;
       width: 100%;
@@ -350,96 +369,122 @@ if (!$featured) {
       transition: all 0.3s;
     }
 
-    .filter-btn.active, .filter-btn:hover {
+    .filter-btn.active,
+    .filter-btn:hover {
       background: var(--primary);
       color: #fff;
       border-color: var(--primary);
     }
 
-    .event-link{
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
+    .event-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
 
-.event-item{
-    transition: 0.3s ease;
-    cursor: pointer;
-}
+    .event-item {
+      transition: 0.3s ease;
+      cursor: pointer;
+    }
 
-.event-item:hover{
-    transform: translateY(-5px);
-}
+    .event-item:hover {
+      transform: translateY(-5px);
+    }
 
-.sold-out{
-    background: #777 !important;
-}
+    .sold-out {
+      background: #777 !important;
+    }
 
-.empty-event{
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 100px;
-    color: #777;
-}
+    .empty-event {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 100px;
+      color: #777;
+    }
 
-.empty-event i{
-    font-size: 50px;
-    margin-bottom: 20px;
-}
-
+    .empty-event i {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- NAVBAR -->
   <?php include '../COMPONENTS/navbar.php'; ?>
   <?php include '../COMPONENTS/user_modals.php'; ?>
 
-    <!-- ===== FEATURED EVENT ===== -->
+  <!-- ===== FEATURED EVENT ===== -->
   <div class="page-top">
     <?php if ($featured): ?>
-    <section class="featured-event">
-      <div class="featured-inner">
-        <div class="featured-text">
-          <p class="featured-date">
-            Unggulan
-          </p>
-          <h1><?php echo htmlspecialchars($featured['judul_event']); ?></h1>
-          <p class="featured-desc">
-            <?php echo htmlspecialchars($featured['deskripsi']); ?>
-          </p>
-          <p class="featured-sub"><?php echo htmlspecialchars($featured['featured_sub'] ?: 'Jangan lewatkan kesempatan langka ini untuk menyaksikan pertunjukan seni budaya terbaik!'); ?></p>
-          <div class="featured-meta">
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <?php echo date('l, d F Y', strtotime($featured['tanggal_event'])); ?>
-            </span>
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-              <?php echo $featured['total_kursi']; ?> Kursi Tersedia
-            </span>
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <?php echo htmlspecialchars($featured['lokasi']); ?>
-            </span>
-            <span class="price-tag">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <?php echo ($featured['harga'] > 0) ? 'Rp ' . number_format($featured['harga'], 0, ',', '.') : 'Gratis'; ?>
-            </span>
+      <section class="featured-event">
+        <div class="featured-inner">
+          <div class="featured-text">
+            <p class="featured-date">
+              Unggulan
+            </p>
+            <h1><?php echo htmlspecialchars($featured['judul_event']); ?></h1>
+            <p class="featured-desc">
+              <?php echo htmlspecialchars($featured['deskripsi']); ?>
+            </p>
+            <p class="featured-sub"><?php echo htmlspecialchars($featured['featured_sub'] ?: 'Jangan lewatkan kesempatan langka ini untuk menyaksikan pertunjukan seni budaya terbaik!'); ?></p>
+            <div class="featured-meta">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <?php echo date('l, d F Y', strtotime($featured['tanggal_event'])); ?>
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+                <?php echo $featured['total_kursi']; ?> Kursi Tersedia
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <?php echo htmlspecialchars($featured['lokasi']); ?>
+              </span>
+              <span class="price-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <?php echo ($featured['harga'] > 0) ? 'Rp ' . number_format($featured['harga'], 0, ',', '.') : 'Gratis'; ?>
+              </span>
+            </div>
+            <a href="#" class="btn-reserve" onclick="openBookingModal(<?php echo htmlspecialchars(json_encode($featured)); ?>)" style="display: inline-block; width: fit-content; margin-top: 20px; margin-left: 0;">Pesan Sekarang</a>
           </div>
-          <a href="#" class="btn-reserve" onclick="openBookingModal(<?php echo htmlspecialchars(json_encode($featured)); ?>)" style="display: inline-block; width: fit-content; margin-top: 20px; margin-left: 0;">Pesan Sekarang</a>
+          <div class="featured-img">
+            <?php
+            $imgPath = $featured['gambar1'] ?: '';
+            if ($imgPath && !str_starts_with($imgPath, 'uploads/') && !str_starts_with($imgPath, 'images/')) {
+              $imgPath = 'images/storage/' . $imgPath;
+            } elseif ($imgPath && str_starts_with($imgPath, 'uploads/')) {
+              $imgPath = $imgPath;
+            }
+            ?>
+            <img src="../../<?php echo $imgPath ?: 'images/storage/default.png'; ?>" alt="<?php echo htmlspecialchars($featured['judul_event']); ?>">
+          </div>
         </div>
-        <div class="featured-img">
-          <img src="../../images/storage/<?php echo $featured['gambar1'] ?: 'default.png'; ?>" alt="<?php echo htmlspecialchars($featured['judul_event']); ?>" />
-        </div>
-      </div>
-    </section>
+      </section>
     <?php endif; ?>
 
     <!-- ===== SEARCH BAR ===== -->
     <div class="search-bar-wrap">
       <div class="search-bar">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
         <input type="text" id="searchInput" placeholder="Search..." oninput="filterEvents()" />
       </div>
     </div>
@@ -461,131 +506,139 @@ if (!$featured) {
 
   <main class="event-container" id="eventList">
 
-<?php if (mysqli_num_rows($query_events) > 0): ?>
-    
-    <?php while ($ev = mysqli_fetch_assoc($query_events)): ?>
+    <?php if (mysqli_num_rows($query_events) > 0): ?>
 
-    <a href="detail.php?id=<?php echo $ev['id']; ?>" class="event-link">
+      <?php while ($ev = mysqli_fetch_assoc($query_events)): ?>
 
-        <div class="modern-card event-item"
-             data-category="<?php echo $ev['kategori_id']; ?>"
-             data-title="<?php echo strtolower(htmlspecialchars($ev['judul_event'])); ?>">
+        <a href="detail.php?id=<?php echo $ev['id']; ?>" class="event-link">
+
+          <div class="modern-card event-item"
+            data-category="<?php echo $ev['kategori_id']; ?>"
+            data-title="<?php echo strtolower(htmlspecialchars($ev['judul_event'])); ?>">
 
             <!-- SLIDER -->
             <div class="card-slider" id="slider-<?php echo $ev['id']; ?>">
 
-                <img src="../../images/storage/<?php echo $ev['gambar1'] ?: 'default.png'; ?>"
-                     class="slider-img"
-                     alt="">
+              <?php
+              $img1 = $ev['gambar1'] ?: '';
+              $img2 = $ev['gambar2'] ?: '';
+              $img3 = $ev['gambar3'] ?: '';
+              $img1 = ($img1 && !str_starts_with($img1, 'uploads/') && !str_starts_with($img1, 'images/')) ? 'images/storage/' . $img1 : $img1;
+              $img2 = ($img2 && !str_starts_with($img2, 'uploads/') && !str_starts_with($img2, 'images/')) ? 'images/storage/' . $img2 : $img2;
+              $img3 = ($img3 && !str_starts_with($img3, 'uploads/') && !str_starts_with($img3, 'images/')) ? 'images/storage/' . $img3 : $img3;
+              ?>
+              <img src="../../<?php echo $img1 ?: 'images/storage/default.png'; ?>"
+                class="slider-img"
+                alt="">
 
-                <?php if ($ev['gambar2']): ?>
-                    <img src="../../images/storage/<?php echo $ev['gambar2']; ?>"
-                         class="slider-img"
-                         alt="">
-                <?php endif; ?>
+              <?php if ($ev['gambar2']): ?>
+                <img src="../../<?php echo $img2; ?>"
+                  class="slider-img"
+                  alt="">
+              <?php endif; ?>
 
-                <?php if ($ev['gambar3']): ?>
-                    <img src="../../images/storage/<?php echo $ev['gambar3']; ?>"
-                         class="slider-img"
-                         alt="">
-                <?php endif; ?>
+              <?php if ($ev['gambar3']): ?>
+                <img src="../../<?php echo $img3; ?>"
+                  class="slider-img"
+                  alt="">
+              <?php endif; ?>
 
             </div>
 
             <!-- DOT -->
             <div class="slider-dots">
 
-                <div class="dot active"></div>
+              <div class="dot active"></div>
 
-                <?php if ($ev['gambar2']): ?>
-                    <div class="dot"></div>
-                <?php endif; ?>
+              <?php if ($ev['gambar2']): ?>
+                <div class="dot"></div>
+              <?php endif; ?>
 
-                <?php if ($ev['gambar3']): ?>
-                    <div class="dot"></div>
-                <?php endif; ?>
+              <?php if ($ev['gambar3']): ?>
+                <div class="dot"></div>
+              <?php endif; ?>
 
             </div>
 
             <!-- CONTENT -->
             <div class="card-overlay">
 
-                <h2 class="card-title">
-                    <?php echo htmlspecialchars($ev['judul_event']); ?>
-                </h2>
+              <h2 class="card-title">
+                <?php echo htmlspecialchars($ev['judul_event']); ?>
+              </h2>
 
-                <div class="card-location">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <?php echo htmlspecialchars($ev['lokasi']); ?>
+              <div class="card-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <?php echo htmlspecialchars($ev['lokasi']); ?>
+              </div>
+
+              <div class="card-info-row">
+
+                <div class="info-item">
+                  <i class="fas fa-chair"></i>
+                  <span>Total: <?php echo $ev['total_kursi']; ?></span>
                 </div>
 
-                <div class="card-info-row">
-
-                    <div class="info-item">
-                        <i class="fas fa-chair"></i>
-                        <span>Total: <?php echo $ev['total_kursi']; ?></span>
-                    </div>
-
-                    <div class="info-item">
-                        <i class="fas fa-user-clock"></i>
-                        <span>Sisa: <?php echo $ev['sisa_kursi']; ?></span>
-                    </div>
-
-                    <div class="info-item">
-                        <i class="fas fa-calendar-day"></i>
-                        <span>
-                            <?php echo date('d M', strtotime($ev['tanggal_event'])); ?>
-                        </span>
-                    </div>
-
+                <div class="info-item">
+                  <i class="fas fa-user-clock"></i>
+                  <span>Sisa: <?php echo $ev['sisa_kursi']; ?></span>
                 </div>
 
-                <div class="card-footer">
-
-                    <div class="card-price">
-                        <?php
-                        echo ($ev['harga'] > 0)
-                            ? 'Rp ' . number_format($ev['harga'], 0, ',', '.')
-                            : 'Gratis';
-                        ?>
-                    </div>
-
-                    <?php if ($ev['sisa_kursi'] > 0): ?>
-                        <div class="btn-reserve">
-                            Lihat Detail
-                        </div>
-                    <?php else: ?>
-                        <div class="btn-reserve sold-out">
-                            Tiket Habis
-                        </div>
-                    <?php endif; ?>
-
+                <div class="info-item">
+                  <i class="fas fa-calendar-day"></i>
+                  <span>
+                    <?php echo date('d M', strtotime($ev['tanggal_event'])); ?>
+                  </span>
                 </div>
+
+              </div>
+
+              <div class="card-footer">
+
+                <div class="card-price">
+                  <?php
+                  echo ($ev['harga'] > 0)
+                    ? 'Rp ' . number_format($ev['harga'], 0, ',', '.')
+                    : 'Gratis';
+                  ?>
+                </div>
+
+                <?php if ($ev['sisa_kursi'] > 0): ?>
+                  <div class="btn-reserve">
+                    Lihat Detail
+                  </div>
+                <?php else: ?>
+                  <div class="btn-reserve sold-out">
+                    Tiket Habis
+                  </div>
+                <?php endif; ?>
+
+              </div>
 
             </div>
-        </div>
+          </div>
 
-    </a>
+        </a>
 
-    <?php endwhile; ?>
+      <?php endwhile; ?>
 
-<?php else: ?>
+    <?php else: ?>
 
-    <div class="empty-event">
+      <div class="empty-event">
         <i class="fas fa-calendar-times"></i>
         <p>Tidak ada event yang ditemukan.</p>
-    </div>
+      </div>
 
-<?php endif; ?>
+    <?php endif; ?>
 
-</main>
+  </main>
 
   <!-- Booking Modal -->
   <div class="booking-modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-close" onclick="closeBookingModal()">&times;</div>
       <div class="modal-title">Pesan Tiket</div>
-      
+
       <div class="booking-info">
         <div class="booking-info-item">
           <span>Event:</span>
@@ -607,7 +660,7 @@ if (!$featured) {
           <label>Jumlah Tiket</label>
           <input type="number" name="jumlah_tiket" id="bookingQty" min="1" value="1" oninput="calculateTotal()">
         </div>
-        
+
         <div class="total-price-display">
           Total: <span id="modalTotalPrice">Rp 0</span>
         </div>
@@ -632,11 +685,11 @@ if (!$featured) {
 
     function setCategory(catId, btn) {
       currentCategory = catId;
-      
+
       // Update active button
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      
+
       filterEvents();
     }
 
@@ -648,7 +701,7 @@ if (!$featured) {
       items.forEach(item => {
         const title = item.getAttribute('data-title');
         const category = item.getAttribute('data-category');
-        
+
         const matchesCategory = (currentCategory === 'all' || category === currentCategory);
         const matchesSearch = title.includes(searchTerm);
 
@@ -702,7 +755,7 @@ if (!$featured) {
 
     function openBookingModal(eventData) {
       if (!eventData) return;
-      
+
       if (!is_logged_in) {
         showAlert('Anda harus login terlebih dahulu untuk memesan tiket.', 'Akses Ditolak', 'error');
         setTimeout(() => window.location.href = 'loginbaru.php', 2000);
@@ -713,11 +766,11 @@ if (!$featured) {
       document.getElementById('modalEventTitle').textContent = eventData.judul_event;
       document.getElementById('modalEventPrice').textContent = eventData.harga > 0 ? 'Rp ' + parseInt(eventData.harga).toLocaleString('id-ID') : 'Gratis';
       document.getElementById('modalEventSeats').textContent = eventData.sisa_kursi;
-      
+
       selectedEventPrice = parseInt(eventData.harga);
       document.getElementById('bookingQty').value = 1;
       document.getElementById('bookingQty').max = eventData.sisa_kursi;
-      
+
       calculateTotal();
       document.getElementById('bookingModal').classList.add('show');
     }
@@ -737,26 +790,27 @@ if (!$featured) {
       const formData = new FormData(this);
 
       fetch('../../BACKEND/process_booking.php', {
-        method: 'POST',
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          closeBookingModal();
-          // Kita gunakan modal sukses yang sudah ada di halaman atau ganti ke showAlert
-          document.getElementById('successMessage').textContent = data.message;
-          document.getElementById('successModal').classList.add('show');
-        } else {
-          showAlert(data.message, 'Gagal Memesan', 'error');
-        }
-      })
-      .catch(err => {
-        console.error('Error:', err);
-        showAlert('Terjadi kesalahan saat memproses pesanan.', 'Error', 'error');
-      });
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            closeBookingModal();
+            // Kita gunakan modal sukses yang sudah ada di halaman atau ganti ke showAlert
+            document.getElementById('successMessage').textContent = data.message;
+            document.getElementById('successModal').classList.add('show');
+          } else {
+            showAlert(data.message, 'Gagal Memesan', 'error');
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          showAlert('Terjadi kesalahan saat memproses pesanan.', 'Error', 'error');
+        });
     };
   </script>
   <?php include '../COMPONENTS/footer.php'; ?>
 </body>
+
 </html>

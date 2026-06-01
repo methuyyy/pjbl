@@ -140,6 +140,8 @@ $user_name = $_SESSION['first_name'] ?? 'User';
 </head>
 <body>
 
+<?php include '../components/navbar.php' ?> 
+
 <div class="mail-container">
   <!-- Sidebar -->
   <div class="mail-sidebar">
@@ -210,7 +212,6 @@ $user_name = $_SESSION['first_name'] ?? 'User';
     content.innerHTML = `
       <div class="content-body">
         <div class="message-view">
-          <a href="index.php" class="back-home"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
           <div class="view-subject">${msg.subjek}</div>
           
           <div class="bubble bubble-user">

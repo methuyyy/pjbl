@@ -2,25 +2,27 @@
 // Cek apakah user sudah login
 $is_logged_in = isset($_SESSION['user_id']);
 $user_name = '';
+$user_pic = '';
 $unread_count = 0;
 
 if ($is_logged_in && isset($conn)) {
-    $user_id = $_SESSION['user_id'];
-    $stmt = $conn->prepare("SELECT first_name FROM users WHERE id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($user = $result->fetch_assoc()) {
-        $user_name = $user['first_name'];
-    }
-    $stmt->close();
+  $user_id = $_SESSION['user_id'];
+  $stmt = $conn->prepare("SELECT first_name, profile_pic FROM users WHERE id = ?");
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  if ($user = $result->fetch_assoc()) {
+    $user_name = $user['first_name'];
+    $user_pic = $user['profile_pic'];
+  }
+  $stmt->close();
 
-    // Hitung pesan yang belum dibaca
-    $stmt_unread = $conn->prepare("SELECT COUNT(*) as unread FROM messages m JOIN message_replies r ON m.id = r.message_id WHERE m.user_id = ? AND r.is_read = 0");
-    $stmt_unread->bind_param("i", $user_id);
-    $stmt_unread->execute();
-    $unread_count = $stmt_unread->get_result()->fetch_assoc()['unread'];
-    $stmt_unread->close();
+  // Hitung pesan yang belum dibaca
+  $stmt_unread = $conn->prepare("SELECT COUNT(*) as unread FROM messages m JOIN message_replies r ON m.id = r.message_id WHERE m.user_id = ? AND r.is_read = 0");
+  $stmt_unread->bind_param("i", $user_id);
+  $stmt_unread->execute();
+  $unread_count = $stmt_unread->get_result()->fetch_assoc()['unread'];
+  $stmt_unread->close();
 }
 ?>
 
@@ -33,6 +35,7 @@ if ($is_logged_in && isset($conn)) {
     align-items: center;
     margin-left: 15px;
   }
+
   .user-info-wrapper {
     display: flex;
     align-items: center;
@@ -43,9 +46,11 @@ if ($is_logged_in && isset($conn)) {
     transition: background 0.3s;
     position: relative;
   }
+
   .user-info-wrapper:hover {
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
   }
+
   .nav-user-name {
     font-family: 'Lato', sans-serif !important;
     font-weight: 500;
@@ -53,6 +58,7 @@ if ($is_logged_in && isset($conn)) {
     font-size: 14px;
     position: relative;
   }
+
   .notification-badge {
     background: #ff4d4d;
     color: white;
@@ -69,15 +75,16 @@ if ($is_logged_in && isset($conn)) {
     top: -8px;
     right: -10px;
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     line-height: 1;
   }
+
   .user-dropdown {
     position: absolute;
     top: 100%;
     right: 0;
     background: white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 10px 0;
     min-width: 150px;
@@ -85,9 +92,11 @@ if ($is_logged_in && isset($conn)) {
     z-index: 1000;
     margin-top: 10px;
   }
+
   .user-dropdown.show {
     display: block;
   }
+
   .user-dropdown a {
     font-family: 'Lato', sans-serif !important;
     display: block;
@@ -98,6 +107,7 @@ if ($is_logged_in && isset($conn)) {
     transition: background 0.2s;
     text-align: left;
   }
+
   .user-dropdown a:hover {
     background: #f5f5f5;
     color: #8B2500;
@@ -105,8 +115,10 @@ if ($is_logged_in && isset($conn)) {
 
   /* Sync Navbar Style */
   body {
-    padding-top: 70px; /* Offset for fixed navbar */
+    padding-top: 70px;
+    /* Offset for fixed navbar */
   }
+
   .navbar {
     background: white !important;
     padding: 0 !important;
@@ -120,6 +132,7 @@ if ($is_logged_in && isset($conn)) {
     right: 0;
     z-index: 1000;
   }
+
   .nav-container {
     display: flex;
     justify-content: space-between;
@@ -129,6 +142,7 @@ if ($is_logged_in && isset($conn)) {
     margin: 0 auto;
     padding: 0 60px;
   }
+
   .navbar-logo {
     display: flex !important;
     flex-direction: row !important;
@@ -138,6 +152,7 @@ if ($is_logged_in && isset($conn)) {
     padding: 0;
     margin: 0;
   }
+
   .navbar-logo .logo-icon {
     width: 45px;
     height: 45px;
@@ -147,19 +162,23 @@ if ($is_logged_in && isset($conn)) {
     align-items: center;
     justify-content: center;
   }
+
   .navbar-logo .logo-icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
   }
+
   .navbar-logo span {
     font-family: 'Playfair Display', serif !important;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #6b2737; /* var(--primary) */
+    color: #6b2737;
+    /* var(--primary) */
     letter-spacing: 0.5px;
     white-space: nowrap;
   }
+
   .navbar-nav {
     display: flex;
     gap: 32px;
@@ -169,20 +188,27 @@ if ($is_logged_in && isset($conn)) {
     padding: 0;
     font-family: 'Lato', sans-serif !important;
   }
+
   .navbar-nav li {
     list-style: none !important;
     font-family: 'Lato', sans-serif !important;
   }
+
   .navbar-nav a {
     font-family: 'Lato', sans-serif !important;
     font-size: 0.95rem;
     font-weight: 500;
-    color: #555; /* var(--text-mid) */
+    color: #555;
+    /* var(--text-mid) */
     transition: color 0.2s;
     letter-spacing: 0.3px;
     text-decoration: none;
   }
-  .navbar-nav a:hover { color: var(--primary); }
+
+  .navbar-nav a:hover {
+    color: var(--primary);
+  }
+
   .btn-login {
     padding: 8px 22px;
     border: 1.5px solid var(--primary);
@@ -192,6 +218,7 @@ if ($is_logged_in && isset($conn)) {
     font-size: 0.88rem;
     transition: background 0.2s, color 0.2s;
   }
+
   .btn-login:hover {
     background: var(--primary);
     color: white !important;
@@ -209,6 +236,7 @@ if ($is_logged_in && isset($conn)) {
     padding: 6px;
     z-index: 1100;
   }
+
   .hamburger span {
     display: block;
     width: 24px;
@@ -218,20 +246,31 @@ if ($is_logged_in && isset($conn)) {
     transition: transform 0.3s, opacity 0.3s;
     transform-origin: center;
   }
-  .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+  .hamburger.open span:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+  }
+
+  .hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .hamburger.open span:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+  }
 
   /* ===== MOBILE OVERLAY ===== */
   .nav-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
+    background: rgba(0, 0, 0, 0.45);
     z-index: 900;
     opacity: 0;
     transition: opacity 0.3s;
   }
+
   .nav-overlay.show {
     display: block;
     opacity: 1;
@@ -241,7 +280,11 @@ if ($is_logged_in && isset($conn)) {
     .nav-container {
       padding: 0 20px;
     }
-    .hamburger { display: flex; }
+
+    .hamburger {
+      display: flex;
+    }
+
     .navbar-nav {
       position: fixed;
       top: 0;
@@ -255,10 +298,14 @@ if ($is_logged_in && isset($conn)) {
       padding: 88px 32px 32px;
       gap: 8px;
       z-index: 1000;
-      transition: right 0.35s cubic-bezier(.4,0,.2,1);
-      box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+      transition: right 0.35s cubic-bezier(.4, 0, .2, 1);
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
     }
-    .navbar-nav.open { right: 0; }
+
+    .navbar-nav.open {
+      right: 0;
+    }
+
     .navbar-nav a {
       font-size: 1rem;
       padding: 10px 0;
@@ -266,6 +313,7 @@ if ($is_logged_in && isset($conn)) {
       width: 100%;
       display: block;
     }
+
     .btn-login {
       margin-top: 8px;
       text-align: center;
@@ -299,13 +347,22 @@ if ($is_logged_in && isset($conn)) {
       <?php if ($is_logged_in): ?>
         <li class="nav-user-profile">
           <div class="user-info-wrapper" id="userDropdownTrigger">
+            <?php if ($user_pic): ?>
+              <img src="../../uploads/user/<?php echo htmlspecialchars($user_pic); ?>" alt="Profile" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+            <?php else: ?>
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #8B2500, #D4A017); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 8px;">
+                <?php echo mb_strtoupper(mb_substr($user_name, 0, 1)); ?>
+              </div>
+            <?php endif; ?>
             <span class="nav-user-name">
               Halo, <?php echo htmlspecialchars($user_name); ?>
               <?php if ($unread_count > 0): ?>
                 <span class="notification-badge"><?php echo $unread_count; ?></span>
               <?php endif; ?>
             </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px; opacity: 0.7;"><path d="m6 9 6 6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px; opacity: 0.7;">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
             <div class="user-dropdown" id="userDropdownMenu">
               <a href="bookings_user.php">Tiket Saya</a>
               <a href="messages_user.php">Pesan Saya <?php echo ($unread_count > 0) ? "($unread_count)" : ""; ?></a>

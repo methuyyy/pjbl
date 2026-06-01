@@ -15,6 +15,7 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,10 +29,12 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 25px;
-      padding: 40px 60px; /* Ditambah padding kiri kanan agar center */
+      padding: 40px 60px;
+      /* Ditambah padding kiri kanan agar center */
       max-width: 1400px;
       margin: 0 auto;
-      justify-content: center; /* Memastikan grid items di tengah jika kurang dari full width */
+      justify-content: center;
+      /* Memastikan grid items di tengah jika kurang dari full width */
     }
 
     .modern-card {
@@ -41,10 +44,11 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       aspect-ratio: 3/4;
       background: #000;
       color: #fff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       transition: transform 0.3s ease;
       text-align: left;
-      width: 100%; /* Memastikan lebar penuh di dalam grid cell */
+      width: 100%;
+      /* Memastikan lebar penuh di dalam grid cell */
     }
 
     .modern-card:hover {
@@ -64,7 +68,8 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       min-width: 100%;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Poster tetap proporsional dan memenuhi kotak */
+      object-fit: cover;
+      /* Poster tetap proporsional dan memenuhi kotak */
       opacity: 0.7;
       display: block;
     }
@@ -72,14 +77,20 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     .card-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.1) 100%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       padding: 24px;
-      pointer-events: none; /* Klik tembus ke card jika diperlukan */
+      pointer-events: none;
+      /* Klik tembus ke card jika diperlukan */
     }
-    .card-overlay * { pointer-events: auto; } /* Aktifkan kembali klik untuk konten di dalamnya */
+
+    .card-overlay * {
+      pointer-events: auto;
+    }
+
+    /* Aktifkan kembali klik untuk konten di dalamnya */
 
     .slider-dots {
       position: absolute;
@@ -94,7 +105,7 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     .dot {
       width: 6px;
       height: 6px;
-      background: rgba(255,255,255,0.4);
+      background: rgba(255, 255, 255, 0.4);
       border-radius: 50%;
       transition: all 0.3s;
     }
@@ -114,7 +125,7 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
 
     .card-location {
       font-size: 0.9rem;
-      color: rgba(255,255,255,0.8);
+      color: rgba(255, 255, 255, 0.8);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -125,8 +136,8 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.15);
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       padding: 12px 0;
       margin-bottom: 24px;
     }
@@ -150,7 +161,7 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     }
 
     .card-price {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       padding: 10px 20px;
       border-radius: 50px;
       font-weight: 600;
@@ -179,12 +190,14 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     .hero {
       position: relative;
       width: 100%;
-      height: 600px; /* Sesuaikan tinggi hero */
+      height: 600px;
+      /* Sesuaikan tinggi hero */
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     .hero-bg {
       position: absolute;
       top: 0;
@@ -193,18 +206,23 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       height: 100%;
       z-index: 1;
     }
+
     .hero-bg img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Gambar memenuhi layar tanpa gepeng */
+      object-fit: cover;
+      /* Gambar memenuhi layar tanpa gepeng */
       object-position: center;
     }
+
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.2); /* Overlay agar teks terbaca */
+      background: rgba(0, 0, 0, 0.2);
+      /* Overlay agar teks terbaca */
       z-index: 2;
     }
+
     .hero-content {
       position: relative;
       z-index: 3;
@@ -218,16 +236,19 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       .hero {
         height: 500px;
       }
+
       .events-grid {
         padding: 20px;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       }
+
       .nav-container {
         padding: 0 20px;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- ===== NAVBAR ===== -->
@@ -249,7 +270,10 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       </p>
       <div class="hero-actions">
         <a href="#events" class="btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
           Cari Event
         </a>
         <a href="partisipasi.html" class="btn-outline">Partisipasi</a>
@@ -264,18 +288,18 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
       <p>Jelajahi berbagai kategori event budaya Jawa yang tersedia</p>
     </div>
     <div class="categories-grid">
-      <?php while($kategori = mysqli_fetch_assoc($query_kategori)) : ?>
+      <?php while ($kategori = mysqli_fetch_assoc($query_kategori)) : ?>
         <div class="category-card">
           <div class="category-icon">
-            <?php 
-              $icon_class = $kategori['icon'];
-              // Jika tidak ada 'fa' di dalam string, tambahkan 'fas' sebagai default
-              if (strpos($icon_class, 'fa') === false) {
-                  $icon_class = "fas " . $icon_class;
-              } else if (strpos($icon_class, 'fa-') !== false && strpos($icon_class, 'fa ') === false && strpos($icon_class, 'fas') === false && strpos($icon_class, 'fab') === false && strpos($icon_class, 'far') === false) {
-                  // Jika ada fa- tapi tidak ada prefix fas/fab/far/fa
-                  $icon_class = "fas " . $icon_class;
-              }
+            <?php
+            $icon_class = $kategori['icon'];
+            // Jika tidak ada 'fa' di dalam string, tambahkan 'fas' sebagai default
+            if (strpos($icon_class, 'fa') === false) {
+              $icon_class = "fas " . $icon_class;
+            } else if (strpos($icon_class, 'fa-') !== false && strpos($icon_class, 'fa ') === false && strpos($icon_class, 'fas') === false && strpos($icon_class, 'fab') === false && strpos($icon_class, 'far') === false) {
+              // Jika ada fa- tapi tidak ada prefix fas/fab/far/fa
+              $icon_class = "fas " . $icon_class;
+            }
             ?>
             <i class="<?php echo $icon_class; ?>"></i>
           </div>
@@ -297,55 +321,63 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
     </div>
 
     <div class="events-grid">
-    <?php while($event = mysqli_fetch_assoc($query_event)) : ?>
-      <div class="modern-card">
-        <div class="card-slider" id="slider-<?php echo $event['id']; ?>">
-          <img src="../../images/storage/<?php echo $event['gambar1'] ?: ($event['gambar'] ?: 'default.png'); ?>" class="slider-img" alt="">
-          <?php if (isset($event['gambar2']) && $event['gambar2']): ?>
-            <img src="../../images/storage/<?php echo $event['gambar2']; ?>" class="slider-img" alt="">
-          <?php endif; ?>
-          <?php if (isset($event['gambar3']) && $event['gambar3']): ?>
-            <img src="../../images/storage/<?php echo $event['gambar3']; ?>" class="slider-img" alt="">
-          <?php endif; ?>
-        </div>
-
-        <div class="slider-dots">
-          <div class="dot active"></div>
-          <?php if (isset($event['gambar2']) && $event['gambar2']): ?><div class="dot"></div><?php endif; ?>
-          <?php if (isset($event['gambar3']) && $event['gambar3']): ?><div class="dot"></div><?php endif; ?>
-        </div>
-
-        <div class="card-overlay">
-          <h2 class="card-title"><?php echo htmlspecialchars($event['judul_event']); ?></h2>
-          <div class="card-location">
-            <i class="fas fa-map-marker-alt"></i>
-            <?php echo htmlspecialchars($event['lokasi']); ?>
+      <?php while ($event = mysqli_fetch_assoc($query_event)) : ?>
+        <div class="modern-card">
+          <div class="card-slider" id="slider-<?php echo $event['id']; ?>">
+            <?php
+            $gambar1 = $event['gambar1'] ?: $event['gambar'] ?: 'default.png';
+            $gambar2 = $event['gambar2'] ?? '';
+            $gambar3 = $event['gambar3'] ?? '';
+            $img1 = (strpos($gambar1, 'uploads/') !== false || strpos($gambar1, 'images/') !== false) ? $gambar1 : 'images/storage/' . $gambar1;
+            $img2 = (strpos($gambar2, 'uploads/') !== false || strpos($gambar2, 'images/') !== false) ? $gambar2 : 'images/storage/' . $gambar2;
+            $img3 = (strpos($gambar3, 'uploads/') !== false || strpos($gambar3, 'images/') !== false) ? $gambar3 : 'images/storage/' . $gambar3;
+            ?>
+            <img src="../../<?php echo $img1; ?>" class="slider-img" alt="">
+            <?php if ($gambar2): ?>
+              <img src="../../<?php echo $img2; ?>" class="slider-img" alt="">
+            <?php endif; ?>
+            <?php if ($gambar3): ?>
+              <img src="../../<?php echo $img3; ?>" class="slider-img" alt="">
+            <?php endif; ?>
           </div>
 
-          <div class="card-info-row">
-            <div class="info-item">
-              <i class="fas fa-chair"></i>
-              <span>Total: <?php echo isset($event['total_kursi']) ? $event['total_kursi'] : '0'; ?></span>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-user-clock"></i>
-              <span>Sisa: <?php echo isset($event['sisa_kursi']) ? $event['sisa_kursi'] : '0'; ?></span>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-calendar-day"></i>
-              <span><?php echo date('d M', strtotime($event['tanggal_event'])); ?></span>
-            </div>
+          <div class="slider-dots">
+            <div class="dot active"></div>
+            <?php if (isset($event['gambar2']) && $event['gambar2']): ?><div class="dot"></div><?php endif; ?>
+            <?php if (isset($event['gambar3']) && $event['gambar3']): ?><div class="dot"></div><?php endif; ?>
           </div>
 
-          <div class="card-footer">
-            <div class="card-price">
-              <?php echo ($event['harga'] > 0) ? 'Rp ' . number_format($event['harga'], 0, ',', '.') : 'Gratis'; ?>
+          <div class="card-overlay">
+            <h2 class="card-title"><?php echo htmlspecialchars($event['judul_event']); ?></h2>
+            <div class="card-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <?php echo htmlspecialchars($event['lokasi']); ?>
             </div>
-            <a href="events.php" class="btn-reserve">Pesan Sekarang</a>
+
+            <div class="card-info-row">
+              <div class="info-item">
+                <i class="fas fa-chair"></i>
+                <span>Total: <?php echo isset($event['total_kursi']) ? $event['total_kursi'] : '0'; ?></span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-user-clock"></i>
+                <span>Sisa: <?php echo isset($event['sisa_kursi']) ? $event['sisa_kursi'] : '0'; ?></span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-calendar-day"></i>
+                <span><?php echo date('d M', strtotime($event['tanggal_event'])); ?></span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="card-price">
+                <?php echo ($event['harga'] > 0) ? 'Rp ' . number_format($event['harga'], 0, ',', '.') : 'Gratis'; ?>
+              </div>
+              <a href="events.php" class="btn-reserve">Pesan Sekarang</a>
+            </div>
           </div>
         </div>
-      </div>
-    <?php endwhile; ?>
+      <?php endwhile; ?>
     </div>
 
     </div>
@@ -371,31 +403,39 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
 
           <div class="contact-item">
             <div class="contact-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
             </div>
             <div class="contact-item-text">
               <p>Email</p>
-              <p>info@budayajawa.id<br/>Email: pawarti@jawa.id</p>
+              <p>info@budayajawa.id<br />Email: pawarti@jawa.id</p>
             </div>
           </div>
 
           <div class="contact-item">
             <div class="contact-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.82 19 19.45 19.45 0 0 1 5 12.18 19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91A16 16 0 0 0 14.09 15.91l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.82 19 19.45 19.45 0 0 1 5 12.18 19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91A16 16 0 0 0 14.09 15.91l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
             </div>
             <div class="contact-item-text">
               <p>Telepon</p>
-              <p>0800-5766-2459<br/>0812-7540-3241</p>
+              <p>0800-5766-2459<br />0812-7540-3241</p>
             </div>
           </div>
 
           <div class="contact-item">
             <div class="contact-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
             </div>
             <div class="contact-item-text">
               <p>Alamat</p>
-              <p>Jl. Pemuda no.22, Kaum, Bon Kijon,<br/>Kota Malang, Jawa Timur</p>
+              <p>Jl. Pemuda no.22, Kaum, Bon Kijon,<br />Kota Malang, Jawa Timur</p>
             </div>
           </div>
 
@@ -482,27 +522,28 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
 
         const formData = new FormData(contactForm);
         fetch('../../BACKEND/messages.php', {
-          method: 'POST',
-          body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-          btn.disabled = false;
-          btn.textContent = 'Kirim pesan sekarang';
-          if (data.status === 'success') {
-            showAlert(data.message, 'Pesan Terkirim', 'success');
-            contactForm.reset();
-          } else {
-            showAlert(data.message, 'Gagal Mengirim', 'error');
-          }
-        })
-        .catch(err => {
-          btn.disabled = false;
-          btn.textContent = 'Kirim pesan sekarang';
-          showAlert('Terjadi kesalahan koneksi.', 'Error', 'error');
-        });
+            method: 'POST',
+            body: formData
+          })
+          .then(res => res.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.textContent = 'Kirim pesan sekarang';
+            if (data.status === 'success') {
+              showAlert(data.message, 'Pesan Terkirim', 'success');
+              contactForm.reset();
+            } else {
+              showAlert(data.message, 'Gagal Mengirim', 'error');
+            }
+          })
+          .catch(err => {
+            btn.disabled = false;
+            btn.textContent = 'Kirim pesan sekarang';
+            showAlert('Terjadi kesalahan koneksi.', 'Error', 'error');
+          });
       });
     }
   </script>
 </body>
+
 </html>

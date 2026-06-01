@@ -1,186 +1,102 @@
 <?php
 require_once 'config.php';
-session_start();
 
-if (!isset($_SESSION['admin_id'])) {
-    header('Content-Type: application/json');
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Unauthorized access.'
-    ]);
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
+$action = $_GET['action'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($action === 'add' || $action === 'update') {
+        $judul_event = $_POST['judul_event'] ?? '';
+        $deskripsi = $_POST['deskripsi'] ?? '';
+        $tanggal_event = $_POST['tanggal_event'] ?? null;
+        $lokasi = $_POST['lokasi'] ?? '';
+        $kategori_id = $_POST['kategori_id'] ?? null;
+        $total_kursi = $_POST['total_kursi'] ?? 0;
+        $sisa_kursi = $_POST['sisa_kursi'] ?? 0;
+        $harga = $_POST['harga'] ?? 0;
+        $status = $_POST['status'] ?? 'Aktif';
+        $is_featured = $_POST['is_featured'] ?? 0;
+        $featured_sub = $_POST['featured_sub'] ?? '';
+
+        $baseDir = __DIR__ . '/../uploads/events/';
+        if (!file_exists($baseDir)) {
+            mkdir($baseDir, 0777, true);
+        }
+
+        $gambar1 = $_POST['existing_gambar1'] ?? '';
+        $gambar2 = $_POST['existing_gambar2'] ?? '';
+        $gambar3 = $_POST['existing_gambar3'] ?? '';
+
+        for ($i = 1; $i <= 3; $i++) {
+            $key = "gambar$i";
+            if (isset($_FILES[$key]) && $_FILES[$key]['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES[$key];
+                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $filename = uniqid() . '.' . $ext;
+                $filepath = $baseDir . $filename;
+                if (move_uploaded_file($file['tmp_name'], $filepath)) {
+                    ${"gambar$i"} = "uploads/events/$filename";
+                }
+            }
+        }
+
+        if ($action === 'add') {
+            $stmt = $conn->prepare("INSERT INTO events (judul_event, deskripsi, tanggal_event, lokasi, kategori_id, total_kursi, sisa_kursi, harga, status, is_featured, featured_sub, gambar1, gambar2, gambar3) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if (!$stmt) {
+                echo json_encode(['status' => 'error', 'message' => 'Prepare failed: ' . $conn->error]);
+                exit;
+            }
+            // Simpler type string - treat most as strings
+            $stmt->bind_param('ssssiiidssssss', $judul_event, $deskripsi, $tanggal_event, $lokasi, $kategori_id, $total_kursi, $sisa_kursi, $harga, $status, $is_featured, $featured_sub, $gambar1, $gambar2, $gambar3);
+            if ($stmt->execute()) {
+                $event_id = $conn->insert_id;
+                saveEventDetails($event_id, $_POST);
+                echo json_encode(['status' => 'success', 'id' => $event_id]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+            }
+        } elseif ($action === 'update') {
+            $event_id = $_POST['id'];
+            $stmt = $conn->prepare("UPDATE events SET judul_event=?, deskripsi=?, tanggal_event=?, lokasi=?, kategori_id=?, total_kursi=?, sisa_kursi=?, harga=?, status=?, is_featured=?, featured_sub=?, gambar1=?, gambar2=?, gambar3=? WHERE id=?");
+            if (!$stmt) {
+                echo json_encode(['status' => 'error', 'message' => 'Prepare failed: ' . $conn->error]);
+                exit;
+            }
+            // Simpler type string - treat most as strings
+            $stmt->bind_param('ssssiiidssssssi', $judul_event, $deskripsi, $tanggal_event, $lokasi, $kategori_id, $total_kursi, $sisa_kursi, $harga, $status, $is_featured, $featured_sub, $gambar1, $gambar2, $gambar3, $event_id);
+            if ($stmt->execute()) {
+                deleteEventDetails($event_id);
+                saveEventDetails($event_id, $_POST);
+                echo json_encode(['status' => 'success']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+            }
+        }
+    }
     exit;
 }
 
-header('Content-Type: application/json');
-
-$action = $_GET['action'] ?? 'list';
-
-
-/* =====================================================
-   LIST EVENT
-===================================================== */
-
 if ($action === 'list') {
-
-    $result = $conn->query("
-        SELECT e.*, k.nama_kategori
-        FROM events e
-        LEFT JOIN kategori k
-        ON e.kategori_id = k.id
-        ORDER BY e.id DESC
-    ");
-
+    $result = $conn->query("SELECT e.*, k.nama_kategori FROM events e LEFT JOIN kategori k ON e.kategori_id = k.id ORDER BY e.id DESC");
     $events = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $events[] = $row;
-    }
-
-    echo json_encode([
-        'status' => 'success',
-        'data' => $events
-    ]);
+    while ($row = $result->fetch_assoc()) $events[] = $row;
+    echo json_encode(['status' => 'success', 'data' => $events]);
+    exit;
 }
 
+if ($action === 'get') {
+    $id = $_GET['id'];
+    $event = $conn->query("SELECT * FROM events WHERE id = $id")->fetch_assoc();
+    if (!$event) die(json_encode(['status' => 'error', 'message' => 'Event not found']));
 
-/* =====================================================
-   GET SINGLE EVENT + DETAIL
-===================================================== */
-
-elseif ($action === 'get' && isset($_GET['id'])) {
-
-    $id = intval($_GET['id']);
-
-    $stmt = $conn->prepare("
-        SELECT e.*, k.nama_kategori
-        FROM events e
-        LEFT JOIN kategori k
-        ON e.kategori_id = k.id
-        WHERE e.id = ?
-    ");
-
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-
-    $event = $stmt->get_result()->fetch_assoc();
-
-    if (!$event) {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Event tidak ditemukan'
-        ]);
-        exit;
-    }
-
-
-    /* =========================
-       BENEFITS
-    ========================= */
-
-    $benefits = [];
-
-    $benefitQuery = $conn->query("
-        SELECT *
-        FROM event_benefits
-        WHERE event_id = '$id'
-        ORDER BY id ASC
-    ");
-
-    while ($row = $benefitQuery->fetch_assoc()) {
-        $benefits[] = $row;
-    }
-
-
-    /* =========================
-       RUNDOWN
-    ========================= */
-
-    $rundowns = [];
-
-    $rundownQuery = $conn->query("
-        SELECT *
-        FROM event_rundowns
-        WHERE event_id = '$id'
-        ORDER BY urutan ASC
-    ");
-
-    while ($row = $rundownQuery->fetch_assoc()) {
-        $rundowns[] = $row;
-    }
-
-
-    /* =========================
-       SPEAKERS
-    ========================= */
-
-    $speakers = [];
-
-    $speakerQuery = $conn->query("
-        SELECT *
-        FROM event_speakers
-        WHERE event_id = '$id'
-        ORDER BY id ASC
-    ");
-
-    while ($row = $speakerQuery->fetch_assoc()) {
-        $speakers[] = $row;
-    }
-
-
-    /* =========================
-       FAQ
-    ========================= */
-
-    $faqs = [];
-
-    $faqQuery = $conn->query("
-        SELECT *
-        FROM event_faqs
-        WHERE event_id = '$id'
-        ORDER BY id ASC
-    ");
-
-    while ($row = $faqQuery->fetch_assoc()) {
-        $faqs[] = $row;
-    }
-
-
-    /* =========================
-       TERMS
-    ========================= */
-
-    $terms = [];
-
-    $termQuery = $conn->query("
-        SELECT *
-        FROM event_terms
-        WHERE event_id = '$id'
-        ORDER BY id ASC
-    ");
-
-    while ($row = $termQuery->fetch_assoc()) {
-        $terms[] = $row;
-    }
-
-
-    /* =========================
-       LOCATION
-    ========================= */
-
-    $location = null;
-
-    $locationQuery = $conn->query("
-        SELECT *
-        FROM event_locations
-        WHERE event_id = '$id'
-        LIMIT 1
-    ");
-
-    if ($locationQuery->num_rows > 0) {
-        $location = $locationQuery->fetch_assoc();
-    }
-
-
+    $benefits = $conn->query("SELECT * FROM event_benefits WHERE event_id = $id")->fetch_all(MYSQLI_ASSOC);
+    $rundowns = $conn->query("SELECT * FROM event_rundown WHERE event_id = $id ORDER BY urutan")->fetch_all(MYSQLI_ASSOC);
+    $speakers = $conn->query("SELECT * FROM event_speakers WHERE event_id = $id")->fetch_all(MYSQLI_ASSOC);
+    $faqs = $conn->query("SELECT * FROM event_faqs WHERE event_id = $id")->fetch_all(MYSQLI_ASSOC);
+    $terms = $conn->query("SELECT * FROM event_terms WHERE event_id = $id")->fetch_all(MYSQLI_ASSOC);
+    $location = $conn->query("SELECT * FROM event_locations WHERE event_id = $id")->fetch_assoc();
     echo json_encode([
         'status' => 'success',
         'data' => [
@@ -193,794 +109,96 @@ elseif ($action === 'get' && isset($_GET['id'])) {
             'location' => $location
         ]
     ]);
+    exit;
 }
 
-
-/* =====================================================
-   ADD EVENT
-===================================================== */
-
-elseif ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $judul = $_POST['judul_event'];
-    $deskripsi = $_POST['deskripsi'];
-    $tanggal = $_POST['tanggal_event'];
-    $lokasi = $_POST['lokasi'];
-    $kategori_id = intval($_POST['kategori_id']);
-    $status = $_POST['status'];
-
-    $total_kursi = intval($_POST['total_kursi'] ?? 0);
-    $sisa_kursi = intval($_POST['sisa_kursi'] ?? 0);
-    $harga = floatval($_POST['harga'] ?? 0);
-
-    $is_featured = intval($_POST['is_featured'] ?? 0);
-    $featured_sub = $_POST['featured_sub'] ?? '';
-
-
-    /* =========================
-       FEATURED
-    ========================= */
-
-    if ($is_featured === 1) {
-        $conn->query("UPDATE events SET is_featured = 0");
-    }
-
-
-    /* =========================
-       UPLOAD IMAGE
-    ========================= */
-
-    $images = ['', '', ''];
-
-    for ($i = 1; $i <= 3; $i++) {
-
-        if (
-            isset($_FILES['gambar' . $i]) &&
-            $_FILES['gambar' . $i]['error'] === UPLOAD_ERR_OK
-        ) {
-
-            $ext = strtolower(pathinfo(
-                $_FILES['gambar' . $i]['name'],
-                PATHINFO_EXTENSION
-            ));
-
-            $newName = md5(
-                time() .
-                $_FILES['gambar' . $i]['name'] .
-                $i
-            ) . '.' . $ext;
-
-            if (
-                move_uploaded_file(
-                    $_FILES['gambar' . $i]['tmp_name'],
-                    '../images/storage/' . $newName
-                )
-            ) {
-                $images[$i - 1] = $newName;
-            }
-        }
-    }
-
-
-    /* =========================
-       INSERT EVENT
-    ========================= */
-
-    $stmt = $conn->prepare("
-        INSERT INTO events (
-            judul_event,
-            deskripsi,
-            tanggal_event,
-            lokasi,
-            kategori_id,
-            status,
-            gambar1,
-            gambar2,
-            gambar3,
-            total_kursi,
-            sisa_kursi,
-            harga,
-            is_featured,
-            featured_sub
-        )
-        VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-        )
-    ");
-
-    $stmt->bind_param(
-        "ssssissssiiiis",
-        $judul,
-        $deskripsi,
-        $tanggal,
-        $lokasi,
-        $kategori_id,
-        $status,
-        $images[0],
-        $images[1],
-        $images[2],
-        $total_kursi,
-        $sisa_kursi,
-        $harga,
-        $is_featured,
-        $featured_sub
-    );
-
-
-    if ($stmt->execute()) {
-
-        $event_id = $conn->insert_id;
-
-
-        /* =========================
-           BENEFITS
-        ========================= */
-
-        if (isset($_POST['benefit_title'])) {
-
-            foreach ($_POST['benefit_title'] as $key => $title) {
-
-                $icon = $_POST['benefit_icon'][$key] ?? '';
-                $desc = $_POST['benefit_desc'][$key] ?? '';
-
-                $insertBenefit = $conn->prepare("
-                    INSERT INTO event_benefits (
-                        event_id,
-                        icon,
-                        title,
-                        description
-                    )
-                    VALUES (?, ?, ?, ?)
-                ");
-
-                $insertBenefit->bind_param(
-                    "isss",
-                    $event_id,
-                    $icon,
-                    $title,
-                    $desc
-                );
-
-                $insertBenefit->execute();
-            }
-        }
-
-
-        /* =========================
-           RUNDOWNS
-        ========================= */
-
-        if (isset($_POST['rundown_time'])) {
-
-            foreach ($_POST['rundown_time'] as $key => $time) {
-
-                $label = $_POST['rundown_title'][$key] ?? '';
-                $desc = $_POST['rundown_desc'][$key] ?? '';
-                $urutan = $key + 1;
-
-                $insertRundown = $conn->prepare("
-                    INSERT INTO event_rundowns (
-                        event_id,
-                        urutan,
-                        waktu,
-                        title,
-                        description
-                    )
-                    VALUES (?, ?, ?, ?, ?)
-                ");
-
-                $insertRundown->bind_param(
-                    "iisss",
-                    $event_id,
-                    $urutan,
-                    $time,
-                    $label,
-                    $desc
-                );
-
-                $insertRundown->execute();
-            }
-        }
-
-
-        /* =========================
-           SPEAKERS
-        ========================= */
-
-        if (isset($_POST['speaker_name'])) {
-
-            foreach ($_POST['speaker_name'] as $key => $name) {
-
-                $job = $_POST['speaker_job'][$key] ?? '';
-                $bio = $_POST['speaker_bio'][$key] ?? '';
-
-                $insertSpeaker = $conn->prepare("
-                    INSERT INTO event_speakers (
-                        event_id,
-                        nama,
-                        pekerjaan,
-                        bio
-                    )
-                    VALUES (?, ?, ?, ?)
-                ");
-
-                $insertSpeaker->bind_param(
-                    "isss",
-                    $event_id,
-                    $name,
-                    $job,
-                    $bio
-                );
-
-                $insertSpeaker->execute();
-            }
-        }
-
-
-        /* =========================
-           FAQ
-        ========================= */
-
-        if (isset($_POST['faq_question'])) {
-
-            foreach ($_POST['faq_question'] as $key => $question) {
-
-                $answer = $_POST['faq_answer'][$key] ?? '';
-
-                $insertFaq = $conn->prepare("
-                    INSERT INTO event_faqs (
-                        event_id,
-                        question,
-                        answer
-                    )
-                    VALUES (?, ?, ?)
-                ");
-
-                $insertFaq->bind_param(
-                    "iss",
-                    $event_id,
-                    $question,
-                    $answer
-                );
-
-                $insertFaq->execute();
-            }
-        }
-
-
-        /* =========================
-           TERMS
-        ========================= */
-
-        if (isset($_POST['term_text'])) {
-
-            foreach ($_POST['term_text'] as $term) {
-
-                $insertTerm = $conn->prepare("
-                    INSERT INTO event_terms (
-                        event_id,
-                        term
-                    )
-                    VALUES (?, ?)
-                ");
-
-                $insertTerm->bind_param(
-                    "is",
-                    $event_id,
-                    $term
-                );
-
-                $insertTerm->execute();
-            }
-        }
-
-
-        /* =========================
-           LOCATION DETAIL
-        ========================= */
-
-        $location_name = $_POST['location_name'] ?? '';
-        $location_address = $_POST['location_address'] ?? '';
-        $location_maps = $_POST['location_maps'] ?? '';
-        $location_note = $_POST['location_note'] ?? '';
-
-        $insertLocation = $conn->prepare("
-            INSERT INTO event_locations (
-                event_id,
-                place_name,
-                address,
-                maps_url,
-                note
-            )
-            VALUES (?, ?, ?, ?, ?)
-        ");
-
-        $insertLocation->bind_param(
-            "issss",
-            $event_id,
-            $location_name,
-            $location_address,
-            $location_maps,
-            $location_note
-        );
-
-        $insertLocation->execute();
-
-
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Event berhasil ditambahkan.'
-        ]);
-
+if ($action === 'delete') {
+    $id = $_GET['id'];
+    if ($conn->query("DELETE FROM events WHERE id = $id")) {
+        echo json_encode(['status' => 'success']);
     } else {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Gagal menambahkan event.'
-        ]);
+        echo json_encode(['status' => 'error', 'message' => $conn->error]);
     }
+    exit;
 }
 
+function saveEventDetails($event_id, $data)
+{
+    global $conn;
 
-/* =====================================================
-   UPDATE EVENT
-===================================================== */
-
-elseif ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $id = intval($_POST['id']);
-
-    $judul = $_POST['judul_event'];
-    $deskripsi = $_POST['deskripsi'];
-    $tanggal = $_POST['tanggal_event'];
-    $lokasi = $_POST['lokasi'];
-    $kategori_id = intval($_POST['kategori_id']);
-    $status = $_POST['status'];
-
-    $total_kursi = intval($_POST['total_kursi'] ?? 0);
-    $sisa_kursi = intval($_POST['sisa_kursi'] ?? 0);
-    $harga = floatval($_POST['harga'] ?? 0);
-
-    $is_featured = intval($_POST['is_featured'] ?? 0);
-    $featured_sub = $_POST['featured_sub'] ?? '';
-
-
-    if ($is_featured === 1) {
-        $conn->query("UPDATE events SET is_featured = 0");
-    }
-
-
-    $sql = "
-        UPDATE events
-        SET
-            judul_event=?,
-            deskripsi=?,
-            tanggal_event=?,
-            lokasi=?,
-            kategori_id=?,
-            status=?,
-            total_kursi=?,
-            sisa_kursi=?,
-            harga=?,
-            is_featured=?,
-            featured_sub=?
-    ";
-
-    $params = [
-        $judul,
-        $deskripsi,
-        $tanggal,
-        $lokasi,
-        $kategori_id,
-        $status,
-        $total_kursi,
-        $sisa_kursi,
-        $harga,
-        $is_featured,
-        $featured_sub
-    ];
-
-    $types = "ssssisiiiis";
-
-
-    for ($i = 1; $i <= 3; $i++) {
-
-        if (
-            isset($_FILES['gambar' . $i]) &&
-            $_FILES['gambar' . $i]['error'] === UPLOAD_ERR_OK
-        ) {
-
-            $ext = strtolower(pathinfo(
-                $_FILES['gambar' . $i]['name'],
-                PATHINFO_EXTENSION
-            ));
-
-            $newName = md5(
-                time() .
-                $_FILES['gambar' . $i]['name'] .
-                $i
-            ) . '.' . $ext;
-
-            if (
-                move_uploaded_file(
-                    $_FILES['gambar' . $i]['tmp_name'],
-                    '../images/storage/' . $newName
-                )
-            ) {
-
-                $sql .= ", gambar$i=?";
-                $params[] = $newName;
-                $types .= "s";
+    if (isset($data['benefit_title'])) {
+        foreach ($data['benefit_title'] as $i => $title) {
+            if (!empty($title)) {
+                $icon = $conn->real_escape_string($data['benefit_icon'][$i] ?? '');
+                $title = $conn->real_escape_string($title);
+                $desc = $conn->real_escape_string($data['benefit_desc'][$i] ?? '');
+                $conn->query("INSERT INTO event_benefits (event_id, icon, title, description) VALUES ($event_id, '$icon', '$title', '$desc')");
             }
         }
     }
 
-
-    $sql .= " WHERE id=?";
-
-    $params[] = $id;
-    $types .= "i";
-
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param($types, ...$params);
-
-
-    if ($stmt->execute()) {
-
-
-        /* =========================
-           DELETE OLD DETAILS
-        ========================= */
-
-        $conn->query("DELETE FROM event_benefits WHERE event_id = '$id'");
-        $conn->query("DELETE FROM event_rundowns WHERE event_id = '$id'");
-        $conn->query("DELETE FROM event_speakers WHERE event_id = '$id'");
-        $conn->query("DELETE FROM event_faqs WHERE event_id = '$id'");
-        $conn->query("DELETE FROM event_terms WHERE event_id = '$id'");
-        $conn->query("DELETE FROM event_locations WHERE event_id = '$id'");
-
-
-        /* =========================
-           INSERT NEW BENEFITS
-        ========================= */
-
-        if (isset($_POST['benefit_title'])) {
-
-            foreach ($_POST['benefit_title'] as $key => $title) {
-
-                $icon = $_POST['benefit_icon'][$key] ?? '';
-                $desc = $_POST['benefit_desc'][$key] ?? '';
-
-                $insertBenefit = $conn->prepare("
-                    INSERT INTO event_benefits (
-                        event_id,
-                        icon,
-                        title,
-                        description
-                    )
-                    VALUES (?, ?, ?, ?)
-                ");
-
-                $insertBenefit->bind_param(
-                    "isss",
-                    $id,
-                    $icon,
-                    $title,
-                    $desc
-                );
-
-                $insertBenefit->execute();
+    if (isset($data['rundown_title'])) {
+        foreach ($data['rundown_title'] as $i => $title) {
+            if (!empty($title)) {
+                $waktu = $data['rundown_waktu'][$i] ?? '00:00:00';
+                $title = $conn->real_escape_string($title);
+                $desc = $conn->real_escape_string($data['rundown_desc'][$i] ?? '');
+                // Add jam_selesai with default value (1 hour later)
+                $jam_selesai = date('H:i:s', strtotime($waktu) + 3600);
+                $conn->query("INSERT INTO event_rundown (event_id, jam_mulai, jam_selesai, title, description, urutan) VALUES ($event_id, '$waktu', '$jam_selesai', '$title', '$desc', $i)");
             }
         }
+    }
 
-
-        /* =========================
-           INSERT NEW RUNDOWN
-        ========================= */
-
-        if (isset($_POST['rundown_time'])) {
-
-            foreach ($_POST['rundown_time'] as $key => $time) {
-
-                $label = $_POST['rundown_title'][$key] ?? '';
-                $desc = $_POST['rundown_desc'][$key] ?? '';
-                $urutan = $key + 1;
-
-                $insertRundown = $conn->prepare("
-                    INSERT INTO event_rundowns (
-                        event_id,
-                        urutan,
-                        waktu,
-                        title,
-                        description
-                    )
-                    VALUES (?, ?, ?, ?, ?)
-                ");
-
-                $insertRundown->bind_param(
-                    "iisss",
-                    $id,
-                    $urutan,
-                    $time,
-                    $label,
-                    $desc
-                );
-
-                $insertRundown->execute();
+    if (isset($data['speaker_name'])) {
+        foreach ($data['speaker_name'] as $i => $name) {
+            if (!empty($name)) {
+                $name = $conn->real_escape_string($name);
+                $job = $conn->real_escape_string($data['speaker_job'][$i] ?? '');
+                $bio = $conn->real_escape_string($data['speaker_bio'][$i] ?? '');
+                $conn->query("INSERT INTO event_speakers (event_id, nama, jabatan, bio) VALUES ($event_id, '$name', '$job', '$bio')");
             }
         }
+    }
 
-
-        /* =========================
-           INSERT NEW SPEAKERS
-        ========================= */
-
-        if (isset($_POST['speaker_name'])) {
-
-            foreach ($_POST['speaker_name'] as $key => $name) {
-
-                $job = $_POST['speaker_job'][$key] ?? '';
-                $bio = $_POST['speaker_bio'][$key] ?? '';
-
-                $insertSpeaker = $conn->prepare("
-                    INSERT INTO event_speakers (
-                        event_id,
-                        nama,
-                        pekerjaan,
-                        bio
-                    )
-                    VALUES (?, ?, ?, ?)
-                ");
-
-                $insertSpeaker->bind_param(
-                    "isss",
-                    $id,
-                    $name,
-                    $job,
-                    $bio
-                );
-
-                $insertSpeaker->execute();
+    if (isset($data['faq_question'])) {
+        foreach ($data['faq_question'] as $i => $question) {
+            if (!empty($question)) {
+                $question = $conn->real_escape_string($question);
+                $answer = $conn->real_escape_string($data['faq_answer'][$i] ?? '');
+                $conn->query("INSERT INTO event_faqs (event_id, question, answer) VALUES ($event_id, '$question', '$answer')");
             }
         }
+    }
 
-
-        /* =========================
-           INSERT FAQ
-        ========================= */
-
-        if (isset($_POST['faq_question'])) {
-
-            foreach ($_POST['faq_question'] as $key => $question) {
-
-                $answer = $_POST['faq_answer'][$key] ?? '';
-
-                $insertFaq = $conn->prepare("
-                    INSERT INTO event_faqs (
-                        event_id,
-                        question,
-                        answer
-                    )
-                    VALUES (?, ?, ?)
-                ");
-
-                $insertFaq->bind_param(
-                    "iss",
-                    $id,
-                    $question,
-                    $answer
-                );
-
-                $insertFaq->execute();
+    if (isset($data['term_text'])) {
+        foreach ($data['term_text'] as $i => $term) {
+            if (!empty($term)) {
+                $term = $conn->real_escape_string($term);
+                $conn->query("INSERT INTO event_terms (event_id, isi, urutan) VALUES ($event_id, '$term', $i)");
             }
         }
+    }
 
+    $nama_tempat = $conn->real_escape_string($data['location_name'] ?? '');
+    $alamat = $conn->real_escape_string($data['location_address'] ?? '');
+    $maps_link = $conn->real_escape_string($data['location_maps'] ?? '');
+    $catatan = $conn->real_escape_string($data['location_note'] ?? '');
 
-        /* =========================
-           INSERT TERMS
-        ========================= */
-
-        if (isset($_POST['term_text'])) {
-
-            foreach ($_POST['term_text'] as $term) {
-
-                $insertTerm = $conn->prepare("
-                    INSERT INTO event_terms (
-                        event_id,
-                        term
-                    )
-                    VALUES (?, ?)
-                ");
-
-                $insertTerm->bind_param(
-                    "is",
-                    $id,
-                    $term
-                );
-
-                $insertTerm->execute();
-            }
-        }
-
-
-        /* =========================
-           LOCATION
-        ========================= */
-
-        $location_name = $_POST['location_name'] ?? '';
-        $location_address = $_POST['location_address'] ?? '';
-        $location_maps = $_POST['location_maps'] ?? '';
-        $location_note = $_POST['location_note'] ?? '';
-
-        $insertLocation = $conn->prepare("
-            INSERT INTO event_locations (
-                event_id,
-                place_name,
-                address,
-                maps_url,
-                note
-            )
-            VALUES (?, ?, ?, ?, ?)
-        ");
-
-        $insertLocation->bind_param(
-            "issss",
-            $id,
-            $location_name,
-            $location_address,
-            $location_maps,
-            $location_note
-        );
-
-        $insertLocation->execute();
-
-
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Event berhasil diperbarui.'
-        ]);
-
+    $check = $conn->query("SELECT id FROM event_locations WHERE event_id = $event_id")->num_rows;
+    if ($check > 0) {
+        $conn->query("UPDATE event_locations SET nama_tempat='$nama_tempat', alamat='$alamat', maps_link='$maps_link', catatan='$catatan' WHERE event_id=$event_id");
     } else {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Gagal memperbarui event.'
-        ]);
+        $conn->query("INSERT INTO event_locations (event_id, nama_tempat, alamat, maps_link, catatan) VALUES ($event_id, '$nama_tempat', '$alamat', '$maps_link', '$catatan')");
     }
 }
 
-
-/* =====================================================
-   GENERATE AI
-===================================================== */
-
-elseif (
-    $action === 'generate_ai' &&
-    $_SERVER['REQUEST_METHOD'] === 'POST'
-) {
-
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    $judul = $data['judul'] ?? '';
-
-    if (empty($judul)) {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Judul kosong'
-        ]);
-
-        exit;
-    }
-
-
-    $apiKey = "API_KEY_BARU_KAMU";
-
-    $prompt = "Buatkan deskripsi event yang menarik dan profesional berdasarkan judul berikut: $judul";
-
-
-    $postData = [
-        "model" => "openai/gpt-3.5-turbo",
-        "messages" => [
-            [
-                "role" => "user",
-                "content" => $prompt
-            ]
-        ]
-    ];
-
-
-    $ch = curl_init("https://openrouter.ai/api/v1/chat/completions");
-
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer " . $apiKey,
-        "Content-Type: application/json",
-        "HTTP-Referer: http://localhost",
-        "X-Title: Pawerti"
-    ]);
-
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-
-    $response = curl_exec($ch);
-
-
-    if (curl_errno($ch)) {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => curl_error($ch)
-        ]);
-
-        exit;
-    }
-
-
-    curl_close($ch);
-
-    $result = json_decode($response, true);
-
-
-    if (isset($result['choices'][0]['message']['content'])) {
-
-        $text = $result['choices'][0]['message']['content'];
-
-        echo json_encode([
-            'status' => 'success',
-            'result' => $text
-        ]);
-
-    } else {
-
-        echo json_encode([
-            'status' => 'error',
-            'response' => $result
-        ]);
-    }
+function deleteEventDetails($event_id)
+{
+    global $conn;
+    $conn->query("DELETE FROM event_benefits WHERE event_id = $event_id");
+    $conn->query("DELETE FROM event_rundown WHERE event_id = $event_id");
+    $conn->query("DELETE FROM event_speakers WHERE event_id = $event_id");
+    $conn->query("DELETE FROM event_faqs WHERE event_id = $event_id");
+    $conn->query("DELETE FROM event_terms WHERE event_id = $event_id");
 }
-
-
-/* =====================================================
-   DELETE EVENT
-===================================================== */
-
-elseif ($action === 'delete' && isset($_GET['id'])) {
-
-    $id = intval($_GET['id']);
-
-
-    $conn->query("DELETE FROM event_benefits WHERE event_id = '$id'");
-    $conn->query("DELETE FROM event_rundowns WHERE event_id = '$id'");
-    $conn->query("DELETE FROM event_speakers WHERE event_id = '$id'");
-    $conn->query("DELETE FROM event_faqs WHERE event_id = '$id'");
-    $conn->query("DELETE FROM event_terms WHERE event_id = '$id'");
-    $conn->query("DELETE FROM event_locations WHERE event_id = '$id'");
-
-
-    $stmt = $conn->prepare("DELETE FROM events WHERE id = ?");
-
-    $stmt->bind_param("i", $id);
-
-
-    if ($stmt->execute()) {
-
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Event berhasil dihapus.'
-        ]);
-
-    } else {
-
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Gagal menghapus event.'
-        ]);
-    }
-}
-
-
-$conn->close();
-?>
