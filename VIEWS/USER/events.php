@@ -426,7 +426,14 @@ if (!$featured) {
             </p>
             <h1><?php echo htmlspecialchars($featured['judul_event']); ?></h1>
             <p class="featured-desc">
-              <?php echo htmlspecialchars($featured['deskripsi']); ?>
+              <?php
+              $deskripsi = htmlspecialchars($featured['deskripsi']);
+              $max_length = 300;
+              if (strlen($deskripsi) > $max_length) {
+                $deskripsi = substr($deskripsi, 0, $max_length) . '...';
+              }
+              echo $deskripsi;
+              ?>
             </p>
             <p class="featured-sub"><?php echo htmlspecialchars($featured['featured_sub'] ?: 'Jangan lewatkan kesempatan langka ini untuk menyaksikan pertunjukan seni budaya terbaik!'); ?></p>
             <div class="featured-meta">

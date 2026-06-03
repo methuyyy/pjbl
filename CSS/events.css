@@ -53,6 +53,11 @@
   color: var(--text-mid);
   line-height: 1.7;
   margin-bottom: 10px;
+  max-height: 5.1em; /* sekitar 3 baris */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .featured-sub {

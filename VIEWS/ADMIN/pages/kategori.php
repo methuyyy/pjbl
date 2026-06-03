@@ -611,6 +611,80 @@ if (!isset($_SESSION['admin_id'])) {
         function closeCategoryModal() {
             document.getElementById('category-modal').style.display = 'none';
         }
+
+        // Event listener untuk submit form
+        document.getElementById('category-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const id = document.getElementById('cat-id').value;
+            const action = id ? 'update' : 'add';
+            
+            try {
+                const res = await fetch(`../../../BACKEND/admin_categories.php?action=${action}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    closeCategoryModal();
+                    showSuccessModal(data.message);
+                    loadCategories();
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Terjadi kesalahan.');
+            }
+        });
+
+        let deleteId = null;
+        
+        function confirmDeleteCategory(id) {
+            deleteId = id;
+            document.getElementById('confirm-title').textContent = 'Konfirmasi Hapus';
+            document.getElementById('confirm-message').textContent = 'Apakah Anda yakin ingin menghapus kategori ini?';
+            document.getElementById('btn-confirm').textContent = 'Ya, Hapus';
+            document.getElementById('confirm-modal').style.display = 'flex';
+            
+            document.getElementById('btn-confirm').onclick = deleteCategory;
+        }
+        
+        async function deleteCategory() {
+            if (!deleteId) return;
+            
+            try {
+                const res = await fetch(`../../../BACKEND/admin_categories.php?action=delete&id=${deleteId}`);
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    closeConfirmModal();
+                    showSuccessModal(data.message);
+                    loadCategories();
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Terjadi kesalahan.');
+            }
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').style.display = 'none';
+            deleteId = null;
+        }
+        
+        function showSuccessModal(message) {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success-modal').style.display = 'flex';
+        }
+        
+        function closeSuccessModal() {
+            document.getElementById('success-modal').style.display = 'none';
+        }
     </script>
 </body>
 

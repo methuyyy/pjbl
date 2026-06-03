@@ -373,7 +373,7 @@ $query_event = mysqli_query($conn, "SELECT * FROM events ORDER BY id DESC LIMIT 
               <div class="card-price">
                 <?php echo ($event['harga'] > 0) ? 'Rp ' . number_format($event['harga'], 0, ',', '.') : 'Gratis'; ?>
               </div>
-              <a href="events.php" class="btn-reserve">Pesan Sekarang</a>
+              <a href="detail.php?id=<?php echo $event['id']; ?>" class="btn-reserve">Lihat Detail</a>
             </div>
           </div>
         </div>

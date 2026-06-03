@@ -21,6 +21,11 @@ $query = mysqli_query($conn, "
 
 $event = mysqli_fetch_assoc($query);
 
+// Query untuk mengambil event terkait (tidak termasuk event saat ini)
+$query_related = mysqli_query($conn, "
+    SELECT * FROM events WHERE id != '$id' ORDER BY id DESC LIMIT 3
+");
+
 if (!$event) {
   die("Event tidak ditemukan");
 }
@@ -94,6 +99,8 @@ if ($event['total_kursi'] > 0) {
       background: var(--warm-white);
       color: var(--text-body);
       line-height: 1.7;
+      margin: 0;
+      padding: 0;
     }
 
 
@@ -129,10 +136,12 @@ if ($event['total_kursi'] > 0) {
       gap: 3rem;
       max-width: 1200px;
       margin: 0 auto;
+      align-items: center;
     }
 
     .hero-meta {
       padding-bottom: 40px;
+      text-align: left;
     }
 
     .badge-unggulan {
@@ -447,6 +456,7 @@ if ($event['total_kursi'] > 0) {
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 2px solid var(--cream);
+      text-align: left;
     }
 
     .section-title::after {
@@ -456,6 +466,7 @@ if ($event['total_kursi'] > 0) {
       height: 3px;
       background: var(--accent-gold);
       margin-top: 8px;
+      margin-left: 0;
     }
 
     .prose p {
@@ -689,7 +700,7 @@ if ($event['total_kursi'] > 0) {
       font-size: 1rem;
     }
 
-    /* RELATED EVENTS */
+    /* RELATED EVENTS - USING MODERN CARD DESIGN */
     .related-section {
       background: var(--cream);
       padding: 40px 5%;
@@ -707,76 +718,204 @@ if ($event['total_kursi'] > 0) {
 
     .related-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 1200px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      max-width: 1400px;
+      margin: 0 auto;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modern-card {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      background: #000;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+      text-align: left;
+      width: 100%;
       margin: 0 auto;
     }
 
-    .related-card {
-      background: #fff;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
+    .modern-card:hover {
+      transform: translateY(-10px);
     }
 
-    .related-img {
-      height: 140px;
-      background: linear-gradient(135deg, #c9845a, #3d1f0e);
-      position: relative;
-    }
-
-    .related-img-2 {
-      background: linear-gradient(135deg, #4a7c59, #1a3d2a);
-    }
-
-    .related-img-3 {
-      background: linear-gradient(135deg, #5a6cc9, #1a2a6c);
-    }
-
-    .related-category {
+    .card-slider {
       position: absolute;
-      bottom: 10px;
-      left: 12px;
-      background: rgba(0, 0, 0, 0.45);
-      color: #fff;
-      font-size: 0.7rem;
+      inset: 0;
+      display: flex;
+      transition: transform 0.5s ease;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slider-img {
+      min-width: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+      display: block;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.1) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+      pointer-events: none;
+    }
+
+    .card-overlay * {
+      pointer-events: auto;
+    }
+
+    .slider-dots {
+      position: absolute;
+      bottom: 180px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: #fff;
+      width: 18px;
+      border-radius: 10px;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
       font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #fff;
     }
 
-    .related-body {
-      padding: 16px;
-    }
-
-    .related-event-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--brown-deep);
-      margin-bottom: 6px;
-    }
-
-    .related-meta {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
+    .card-location {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      margin-bottom: 20px;
     }
 
-    .related-meta .material-icons {
+    .card-info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 0;
+      margin-bottom: 24px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .info-item i {
+      opacity: 0.7;
       font-size: 0.9rem;
-      color: var(--text-muted);
     }
 
-    .related-price {
-      font-weight: 700;
-      color: var(--dark-maroon);
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-price {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-reserve {
+      background: #fff;
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
       font-size: 0.95rem;
+      flex: 1;
+      text-align: center;
+      margin-left: 15px;
+      transition: background 0.3s;
+    }
+
+    .btn-reserve:hover {
+      background: #f0f0f0;
+    }
+
+    /* Responsif untuk tampilan yang lebih terpusat */
+    @media (max-width: 992px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-meta {
+        text-align: center;
+      }
+
+      .organizer-row {
+        justify-content: center;
+      }
+
+      .event-stats {
+        justify-content: center;
+      }
+
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        text-align: center;
+      }
+
+      .section-title::after {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .related-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero {
+        padding: 30px 5% 0;
+      }
+
+      .related-section {
+        padding: 30px 5%;
+      }
     }
 
     /* FAQ */
@@ -1308,7 +1447,7 @@ if ($event['total_kursi'] > 0) {
           <span id="total-price" style="font-weight: 700; color: var(--brown-deep);">Rp <?= number_format($event['harga'], 0, ',', '.') ?></span>
         </div>
 
-        <button class="btn-pesan" onclick="openBookingModal(<?= htmlspecialchars(json_encode($event)) ?>)"><i class="material-icons" style="font-size: 1.1rem;">confirmation_number</i> Pesan Sekarang</button>
+        <button class="btn-pesan" onclick="openBookingModal(<?= htmlspecialchars(json_encode($event)) ?>)"><i class="material-icons" style="font-size: 1.1rem;">confirmation_number</i> Booking sekarang</button>
         <button class="btn-wishlist"><i class="material-icons" style="font-size: 1.1rem;">favorite_border</i> Simpan ke Wishlist</button>
 
         <div class="card-meta-list">
@@ -1338,45 +1477,63 @@ if ($event['total_kursi'] > 0) {
   <div class="related-section">
     <h2 class="related-title">Event Budaya Lainnya</h2>
     <div class="related-grid">
-      <div class="related-card">
-        <div class="related-img" style="background: linear-gradient(135deg, #c9845a, #3d1f0e);">
-          <span class="related-category">Seni Pertunjukan</span>
-        </div>
-        <div class="related-body">
-          <div class="related-event-title">Pasar Rakyat Surabaya</div>
-          <div class="related-meta"><i class="material-icons">place</i> Surabaya &nbsp;·&nbsp; <i class="material-icons">calendar_today</i> 15 Juni 2026</div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="related-price">Rp 10.000</div>
-            <span style="font-size:0.75rem; background:#ffeaea; color:#a30000; padding:3px 10px; border-radius:4px; font-weight:600;">Tiket Habis</span>
+      <?php while ($related_event = mysqli_fetch_assoc($query_related)) : ?>
+        <div class="modern-card">
+          <div class="card-slider" id="slider-<?php echo $related_event['id']; ?>">
+            <?php
+            $gambar1 = $related_event['gambar1'] ?: $related_event['gambar'] ?: 'default.png';
+            $gambar2 = $related_event['gambar2'] ?? '';
+            $gambar3 = $related_event['gambar3'] ?? '';
+            $img1 = (strpos($gambar1, 'uploads/') !== false || strpos($gambar1, 'images/') !== false) ? $gambar1 : 'images/storage/' . $gambar1;
+            $img2 = (strpos($gambar2, 'uploads/') !== false || strpos($gambar2, 'images/') !== false) ? $gambar2 : 'images/storage/' . $gambar2;
+            $img3 = (strpos($gambar3, 'uploads/') !== false || strpos($gambar3, 'images/') !== false) ? $gambar3 : 'images/storage/' . $gambar3;
+            ?>
+            <img src="../../<?php echo $img1; ?>" class="slider-img" alt="">
+            <?php if ($gambar2): ?>
+              <img src="../../<?php echo $img2; ?>" class="slider-img" alt="">
+            <?php endif; ?>
+            <?php if ($gambar3): ?>
+              <img src="../../<?php echo $img3; ?>" class="slider-img" alt="">
+            <?php endif; ?>
+          </div>
+
+          <div class="slider-dots">
+            <div class="dot active"></div>
+            <?php if (isset($related_event['gambar2']) && $related_event['gambar2']): ?><div class="dot"></div><?php endif; ?>
+            <?php if (isset($related_event['gambar3']) && $related_event['gambar3']): ?><div class="dot"></div><?php endif; ?>
+          </div>
+
+          <div class="card-overlay">
+            <h2 class="card-title"><?php echo htmlspecialchars($related_event['judul_event']); ?></h2>
+            <div class="card-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <?php echo htmlspecialchars($related_event['lokasi']); ?>
+            </div>
+
+            <div class="card-info-row">
+              <div class="info-item">
+                <i class="fas fa-chair"></i>
+                <span>Total: <?php echo isset($related_event['total_kursi']) ? $related_event['total_kursi'] : '0'; ?></span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-user-clock"></i>
+                <span>Sisa: <?php echo isset($related_event['sisa_kursi']) ? $related_event['sisa_kursi'] : '0'; ?></span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-calendar-day"></i>
+                <span><?php echo date('d M', strtotime($related_event['tanggal_event'])); ?></span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="card-price">
+                <?php echo ($related_event['harga'] > 0) ? 'Rp ' . number_format($related_event['harga'], 0, ',', '.') : 'Gratis'; ?>
+              </div>
+              <a href="detail.php?id=<?php echo $related_event['id']; ?>" class="btn-reserve">Lihat Detail</a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="related-card">
-        <div class="related-img" style="background: linear-gradient(135deg, #4a7c59, #1a3d2a);">
-          <span class="related-category">Workshop Budaya</span>
-        </div>
-        <div class="related-body">
-          <div class="related-event-title">Festival Reog Ponorogo</div>
-          <div class="related-meta"><i class="material-icons">place</i> Ponorogo &nbsp;·&nbsp; <i class="material-icons">calendar_today</i> 20 Juni 2026</div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="related-price">Rp 50.000</div>
-            <span style="font-size:0.75rem; color: var(--text-muted);">Sisa 98 kursi</span>
-          </div>
-        </div>
-      </div>
-      <div class="related-card">
-        <div class="related-img" style="background: linear-gradient(135deg, #8b6914, #4a3800);">
-          <span class="related-category">Kuliner Tradisional</span>
-        </div>
-        <div class="related-body">
-          <div class="related-event-title">Kelas Memasak Gudeg Jogja</div>
-          <div class="related-meta"><i class="material-icons">place</i> Yogyakarta &nbsp;·&nbsp; <i class="material-icons">calendar_today</i> 25 Juli 2026</div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="related-price">Rp 85.000</div>
-            <span style="font-size:0.75rem; color: var(--text-muted);">Sisa 30 kursi</span>
-          </div>
-        </div>
-      </div>
+      <?php endwhile; ?>
     </div>
   </div>
 
@@ -1501,36 +1658,25 @@ if ($event['total_kursi'] > 0) {
           showAlert('Terjadi kesalahan saat memproses pesanan.', 'Error', 'error');
         });
     };
-  </script>
 
-  <!-- Debug Info -->
-  <div style="max-width:1000px; margin:40px auto; padding:20px; background:#fff; border:1px solid #eee; border-radius:8px; font-family:monospace; font-size:12px;">
-    <h3>Debug Data (Remove Later):</h3>
-    <details>
-      <summary>Benefits</summary>
-      <pre><?php print_r($benefits); ?></pre>
-    </details>
-    <details>
-      <summary>Rundown</summary>
-      <pre><?php print_r($rundown); ?></pre>
-    </details>
-    <details>
-      <summary>Speakers</summary>
-      <pre><?php print_r($speakers); ?></pre>
-    </details>
-    <details>
-      <summary>Terms</summary>
-      <pre><?php print_r($terms); ?></pre>
-    </details>
-    <details>
-      <summary>FAQs</summary>
-      <pre><?php print_r($faqs); ?></pre>
-    </details>
-    <details>
-      <summary>Location</summary>
-      <pre><?php print_r($location); ?></pre>
-    </details>
-  </div>
+    // Simple Slider Logic for Modern Cards
+    document.querySelectorAll('.modern-card').forEach(card => {
+      const slider = card.querySelector('.card-slider');
+      const dots = card.querySelectorAll('.dot');
+      let currentIdx = 0;
+      const totalImgs = slider.querySelectorAll('.slider-img').length;
+
+      if (totalImgs > 1) {
+        setInterval(() => {
+          currentIdx = (currentIdx + 1) % totalImgs;
+          slider.style.transform = `translateX(-${currentIdx * 100}%)`;
+          dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === currentIdx);
+          });
+        }, 3000);
+      }
+    });
+  </script>
 
   <?php include '../COMPONENTS/footer.php'; ?>
 </body>
